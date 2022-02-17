@@ -2,7 +2,10 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Unit Sale', {
-	// refresh: function(frm) {
-
-	// }
+	refresh: function (frm) {
+		if (!frm.doc.date_time) {
+			// Set now date
+			frm.set_value("date_time", new Date())
+		}
+	}
 });
