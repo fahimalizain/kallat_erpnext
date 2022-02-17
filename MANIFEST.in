@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include kallat_erpnext *.css
+recursive-include kallat_erpnext *.csv
+recursive-include kallat_erpnext *.html
+recursive-include kallat_erpnext *.ico
+recursive-include kallat_erpnext *.js
+recursive-include kallat_erpnext *.json
+recursive-include kallat_erpnext *.md
+recursive-include kallat_erpnext *.png
+recursive-include kallat_erpnext *.py
+recursive-include kallat_erpnext *.svg
+recursive-include kallat_erpnext *.txt
+recursive-exclude kallat_erpnext *.pyc
