@@ -9,7 +9,11 @@
  "field_order": [
   "title",
   "project",
-  "price"
+  "column_break_3",
+  "status",
+  "price",
+  "section_break_6",
+  "status_updates"
  ],
  "fields": [
   {
@@ -32,11 +36,36 @@
    "fieldtype": "Currency",
    "label": "Price",
    "reqd": 1
+  },
+  {
+   "default": "Empty Plot",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Empty Plot\nFoundation Completed\n1st Floor Slab Completed\nStructure Completed\nTiling Completed\nHand Over Completed",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "status_updates",
+   "fieldtype": "Table",
+   "label": "Status Updates",
+   "options": "Kallat Unit Status Update",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-02-17 20:02:33.022716",
+ "modified": "2022-02-17 21:02:52.076708",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Kallat Unit",
