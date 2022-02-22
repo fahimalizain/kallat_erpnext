@@ -8,10 +8,12 @@
  "field_order": [
   "date_time",
   "customer",
-  "project",
-  "column_break_3",
   "status",
+  "column_break_3",
+  "project",
   "unit",
+  "unit_status",
+  "unit_price",
   "amended_from",
   "section_break_6",
   "scheduled_payments",
@@ -115,16 +117,30 @@
    "default": "Booked",
    "fieldname": "status",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Status",
-   "options": "Booked\nAgreement Signed\nEmpty Plot\nFoundation Completed\n1st Floor Slab Completed\nStructure Completed\nTiling Completed\nHand Over Completed",
+   "options": "Booked\nAgreement Signed\nHand Over Completed",
    "read_only": 1,
    "reqd": 1
+  },
+  {
+   "default": "Empty Plot",
+   "fieldname": "unit_status",
+   "fieldtype": "Data",
+   "label": "Unit Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "unit_price",
+   "fieldtype": "Currency",
+   "label": "Unit Price",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-02-17 21:12:36.536819",
+ "modified": "2022-02-22 15:15:56.869532",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",
