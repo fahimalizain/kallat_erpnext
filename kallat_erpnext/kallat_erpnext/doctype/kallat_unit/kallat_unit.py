@@ -21,6 +21,10 @@ class KallatUnit(Document):
     def validate(self):
         self.validate_status_change()
 
+    def on_update(self):
+        if self.flags.status_updated:
+            self.update_unit_sale()
+
     def validate_status_change(self):
         statuses = [e.value for e in KallatUnitStatus]
         if self.status not in statuses:
@@ -28,12 +32,24 @@ class KallatUnit(Document):
 
         if self.is_new():
             return
-        if not cint(self.flags.allow_status_change):
+
+        if self.get_db_value("status") == self.status:
+            # No change to status
+            return
+
+        # There is change, lets make sure Unit Sale exists
+        if not self.get_unit_sale():
+            frappe.throw("This plot has not been sold yet to start work")
+
+        if not cint(self.flags.status_updated):
             raise Exception("Invalid Op")
+
+    def get_unit_sale(self):
+        return frappe.db.get_value("Unit Sale", {"docstatus": 1, "unit": self.name})
 
     @frappe.whitelist()
     def update_status(self, new_status: str, remarks: str = None):
-        self.flags.allow_status_change = True
+        self.flags.status_updated = True
         self.append("status_updates", dict(
             date_time=now_datetime(),
             remarks=remarks,
@@ -42,3 +58,11 @@ class KallatUnit(Document):
         ))
         self.status = new_status
         self.save()
+
+    def update_unit_sale(self):
+        unit_sale = frappe.get_doc("Unit Sale", self.get_unit_sale())
+        unit_sale.schedule_due_payment(
+            new_status=KallatUnitStatus(self.status),
+            remarks="Unit status Update",
+            auto_save=True
+        )

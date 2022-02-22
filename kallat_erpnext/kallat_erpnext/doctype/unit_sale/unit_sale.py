@@ -50,7 +50,8 @@ class UnitSale(Document):
 
     def before_submit(self):
         self.schedule_due_payment(
-            new_status=UnitSaleStatuses(self.status)
+            new_status=UnitSaleStatuses(self.status),
+            auto_save=False
         )
 
     def validate_unit(self):
@@ -64,10 +65,12 @@ class UnitSale(Document):
         unit_status = frappe.db.get_value("Kallat Unit", self.unit, "status")
         self.unit_status = unit_status
 
-    def update_amount_due(self):
+    def calculate_totals(self):
         self.total_due = flt(sum(x.amount for x in self.scheduled_payments), precision=2)
+        self.total_received = flt(sum(x.amount for x in self.payments_received), precision=2)
+        self.balance_amount = flt(self.unit_price - self.total_received, precision=2)
 
-    def schedule_due_payment(self, new_status, remarks=None):
+    def schedule_due_payment(self, new_status, remarks=None, auto_save=True):
         if new_status not in PAYMENT_SCHEDULE:
             return
 
@@ -86,4 +89,7 @@ class UnitSale(Document):
             percentage=schedule.get("percent"),
             amount=amount
         ))
-        self.update_amount_due()
+        self.calculate_totals()
+        if auto_save:
+            self.flags.ignore_validate_update_after_submit = True
+            self.save()

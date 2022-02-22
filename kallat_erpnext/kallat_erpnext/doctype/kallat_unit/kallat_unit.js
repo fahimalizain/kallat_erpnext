@@ -17,16 +17,25 @@ frappe.ui.form.on("Kallat Unit", {
   },
 
   add_update_status_button(frm) {
+    const statusIdx = kallat.unit_statuses.indexOf(frm.doc.status);
+    console.log(statusIdx)
+    if (statusIdx + 1 >= kallat.unit_statuses.length) {
+      console.log("At final status now")
+      return;
+    }
+    const nextStatus = kallat.unit_statuses[statusIdx + 1];
+    console.log(nextStatus)
+
     frm.add_custom_button("Update Status", () => {
       const d = new frappe.ui.Dialog({
         title: "Update Unit Status",
         fields: [
           {
-            label: "New Status",
-            fieldtype: "Select",
+            label: "Next Status",
+            fieldtype: "Data",
+            read_only: 1,
             fieldname: "new_status",
-            options: kallat.unit_statuses.join("\n"),
-            default: frm.doc.status,
+            default: nextStatus,
           },
           {
             label: "Remarks",
