@@ -13,18 +13,20 @@ kallat.unit_statuses = [
 
 frappe.ui.form.on("Kallat Unit", {
   refresh(frm) {
+    if (frm.doc.__islocal) {
+      return;
+    }
     frm.events.add_update_status_button(frm);
+    frm.events.add_goto_unit_sale_button(frm);
   },
 
   add_update_status_button(frm) {
     const statusIdx = kallat.unit_statuses.indexOf(frm.doc.status);
-    console.log(statusIdx)
     if (statusIdx + 1 >= kallat.unit_statuses.length) {
-      console.log("At final status now")
+      console.log("At final status now");
       return;
     }
     const nextStatus = kallat.unit_statuses[statusIdx + 1];
-    console.log(nextStatus)
 
     frm.add_custom_button("Update Status", () => {
       const d = new frappe.ui.Dialog({
@@ -64,6 +66,21 @@ frappe.ui.form.on("Kallat Unit", {
       });
 
       d.show();
+    });
+  },
+
+  add_goto_unit_sale_button(frm) {
+    frm.call({
+      method: "get_unit_sale",
+      doc: frm.doc,
+      callback: (r) => {
+        if (!r.message) {
+          return;
+        }
+        frm.add_custom_button("Goto Unit Sale", () => {
+          frappe.set_route("unit-sale", r.message);
+        });
+      },
     });
   },
 });

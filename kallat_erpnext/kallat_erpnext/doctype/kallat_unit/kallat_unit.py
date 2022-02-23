@@ -26,6 +26,7 @@ class KallatUnit(Document):
             self.update_unit_sale()
 
     def validate_status_change(self):
+        from kallat_erpnext.kallat_erpnext.doctype.unit_sale.unit_sale import UnitSaleStatuses
         statuses = [e.value for e in KallatUnitStatus]
         if self.status not in statuses:
             raise Exception("Invalid Status")
@@ -41,9 +42,16 @@ class KallatUnit(Document):
         if not self.get_unit_sale():
             frappe.throw("This plot has not been sold yet to start work")
 
+        # Lets make sure the UnitSale has at-least signed the Agreement
+        unit_sale_status = UnitSaleStatuses(frappe.db.get_value(
+            "Unit Sale", self.get_unit_sale(), "status"))
+        if unit_sale_status != UnitSaleStatuses.WIP:
+            frappe.throw("Please sign the agreement first on UnitSale: " + self.get_unit_sale())
+
         if not cint(self.flags.status_updated):
             raise Exception("Invalid Op")
 
+    @frappe.whitelist()
     def get_unit_sale(self):
         return frappe.db.get_value("Unit Sale", {"docstatus": 1, "unit": self.name})
 

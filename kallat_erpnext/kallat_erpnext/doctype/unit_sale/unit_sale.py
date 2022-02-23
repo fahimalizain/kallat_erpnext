@@ -81,8 +81,10 @@ class UnitSale(Document):
         elif schedule.type == "Percent":
             amount = self.unit_price * schedule.percent / 100
 
-        amount = flt(amount, precision=2)
+        if schedule.consider_already_paid:
+            amount = amount - self.total_due
 
+        amount = flt(amount, precision=2)
         self.append("scheduled_payments", dict(
             remarks=remarks or schedule.get("remarks"),
             type=schedule.get("type"),
