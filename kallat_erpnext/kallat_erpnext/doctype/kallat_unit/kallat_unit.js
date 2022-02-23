@@ -58,6 +58,9 @@ frappe.ui.form.on("Kallat Unit", {
                 );
               } else {
                 frappe.msgprint("Status Updated!");
+                setTimeout(() => {
+                  location.reload();
+                }, 1000);
                 d.hide();
               }
             },

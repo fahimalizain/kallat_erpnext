@@ -92,6 +92,24 @@ class UnitSale(Document):
             amount=amount
         ))
         self.calculate_totals()
+        self.update_unit_status()
         if auto_save:
             self.flags.ignore_validate_update_after_submit = True
             self.save()
+
+    @frappe.whitelist()
+    def sign_agreement(self, agreement_file, remarks=None):
+        if UnitSaleStatuses(self.status) != UnitSaleStatuses.BOOKED:
+            frappe.throw("Invalid OP")
+
+        file = frappe.db.get_value("File", {"file_url": agreement_file})
+        if not file:
+            frappe.throw("File not found, Please re-upload ?")
+
+        # Attach file to this Sale
+        self.status = UnitSaleStatuses.WIP.value  # Let's start work!
+        self.agreement_file = agreement_file
+        self.schedule_due_payment(
+            new_status=UnitSaleStatuses.AGREEMENT_SIGNED,
+            remarks=remarks or "Agreement Signed"
+        )

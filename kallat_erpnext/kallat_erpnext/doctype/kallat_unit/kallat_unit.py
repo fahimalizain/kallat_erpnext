@@ -71,6 +71,6 @@ class KallatUnit(Document):
         unit_sale = frappe.get_doc("Unit Sale", self.get_unit_sale())
         unit_sale.schedule_due_payment(
             new_status=KallatUnitStatus(self.status),
-            remarks="Unit status Update",
+            remarks="Unit Update: " + self.status,
             auto_save=True
         )

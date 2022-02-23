@@ -9,6 +9,7 @@
   "date_time",
   "customer",
   "status",
+  "agreement_file",
   "column_break_3",
   "project",
   "unit",
@@ -119,7 +120,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Booked\nAgreement Signed\nHand Over Completed",
+   "options": "Booked\nAgreement Signed\nWork In Progress\nCompleted",
    "read_only": 1,
    "reqd": 1
   },
@@ -135,12 +136,18 @@
    "fieldtype": "Currency",
    "label": "Unit Price",
    "read_only": 1
+  },
+  {
+   "fieldname": "agreement_file",
+   "fieldtype": "Attach",
+   "label": "Agreement File",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-02-22 15:15:56.869532",
+ "modified": "2022-02-23 10:16:50.600980",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",
