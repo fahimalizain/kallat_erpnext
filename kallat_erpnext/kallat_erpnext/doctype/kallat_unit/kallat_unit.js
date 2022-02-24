@@ -50,6 +50,7 @@ frappe.ui.form.on("Kallat Unit", {
           frm.call({
             method: "update_status",
             doc: frm.doc,
+            freeze: true,
             args: values,
             callback(r) {
               if (r.exc) {
@@ -60,7 +61,7 @@ frappe.ui.form.on("Kallat Unit", {
                 frappe.msgprint("Status Updated!");
                 setTimeout(() => {
                   location.reload();
-                }, 1000);
+                }, 2000);
                 d.hide();
               }
             },

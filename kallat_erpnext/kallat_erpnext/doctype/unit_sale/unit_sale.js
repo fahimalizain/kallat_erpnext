@@ -47,6 +47,7 @@ frappe.ui.form.on("Unit Sale", {
           method: "sign_agreement",
           doc: frm.doc,
           args: values,
+          freeze: true,
           callback(r) {
             if (r.exc) {
               frappe.msgprint(
@@ -54,6 +55,9 @@ frappe.ui.form.on("Unit Sale", {
               );
             } else {
               frappe.msgprint("Status Updated!");
+              setTimeout(() => {
+                location.reload();
+              }, 2000);
               d.hide();
             }
           },
