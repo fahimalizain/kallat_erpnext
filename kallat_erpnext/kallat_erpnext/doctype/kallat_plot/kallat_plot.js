@@ -11,7 +11,7 @@ kallat.unit_statuses = [
   "Hand Over Completed",
 ];
 
-frappe.ui.form.on("Kallat Unit", {
+frappe.ui.form.on("Kallat Plot", {
   refresh(frm) {
     if (frm.doc.__islocal) {
       return;

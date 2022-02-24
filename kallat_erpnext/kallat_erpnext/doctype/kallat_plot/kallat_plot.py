@@ -8,7 +8,7 @@ from frappe.model.document import Document
 from frappe.utils import cint, now_datetime
 
 
-class KallatUnitStatus(Enum):
+class KallatPlotStatus(Enum):
     EMPTY_PLOT = "Empty Plot"
     FOUNDATION_COMPLETED = "Foundation Completed"
     FIRST_FLOOR_SLAB_COMPLETED = "1st Floor Slab Completed"
@@ -17,7 +17,7 @@ class KallatUnitStatus(Enum):
     HAND_OVER_COMPLETED = "Hand Over Completed"
 
 
-class KallatUnit(Document):
+class KallatPlot(Document):
     def validate(self):
         self.validate_status_change()
 
@@ -27,7 +27,7 @@ class KallatUnit(Document):
 
     def validate_status_change(self):
         from kallat_erpnext.kallat_erpnext.doctype.unit_sale.unit_sale import UnitSaleStatuses
-        statuses = [e.value for e in KallatUnitStatus]
+        statuses = [e.value for e in KallatPlotStatus]
         if self.status not in statuses:
             raise Exception("Invalid Status")
 
@@ -70,7 +70,7 @@ class KallatUnit(Document):
     def update_unit_sale(self):
         unit_sale = frappe.get_doc("Unit Sale", self.get_unit_sale())
         unit_sale.schedule_due_payment(
-            new_status=KallatUnitStatus(self.status),
+            new_status=KallatPlotStatus(self.status),
             remarks="Unit Update: " + self.status,
             auto_save=True
         )

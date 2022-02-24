@@ -12,7 +12,7 @@
   "agreement_file",
   "column_break_3",
   "project",
-  "unit",
+  "plot",
   "unit_status",
   "unit_price",
   "amended_from",
@@ -39,14 +39,6 @@
    "in_list_view": 1,
    "label": "Project",
    "options": "Kallat Project",
-   "reqd": 1
-  },
-  {
-   "fieldname": "unit",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Unit",
-   "options": "Kallat Unit",
    "reqd": 1
   },
   {
@@ -142,12 +134,20 @@
    "fieldtype": "Attach",
    "label": "Agreement File",
    "read_only": 1
+  },
+  {
+   "fieldname": "plot",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Plot",
+   "options": "Kallat Plot",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-02-23 10:16:50.600980",
+ "modified": "2022-02-24 14:14:55.706836",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",

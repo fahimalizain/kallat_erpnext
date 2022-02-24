@@ -4,5 +4,5 @@
 # import frappe
 import unittest
 
-class TestKallatUnit(unittest.TestCase):
+class TestKallatPlot(unittest.TestCase):
 	pass
