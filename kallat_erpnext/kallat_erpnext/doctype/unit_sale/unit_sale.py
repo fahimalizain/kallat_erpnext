@@ -7,7 +7,7 @@ import frappe
 # import frappe
 from frappe.utils import flt
 from frappe.model.document import Document
-from kallat_erpnext.kallat_erpnext.doctype.kallat_unit.kallat_unit import KallatUnitStatus
+from kallat_erpnext.kallat_erpnext.doctype.kallat_plot.kallat_plot import KallatPlotStatus
 
 
 class UnitSaleStatuses(Enum):
@@ -25,19 +25,19 @@ PAYMENT_SCHEDULE = frappe._dict(
         UnitSaleStatuses.AGREEMENT_SIGNED: frappe._dict(
             type="Percent", percent=40, consider_already_paid=True,
         ),
-        KallatUnitStatus.FOUNDATION_COMPLETED: frappe._dict(
+        KallatPlotStatus.FOUNDATION_COMPLETED: frappe._dict(
             type="Percent", percent=30,
         ),
-        KallatUnitStatus.FIRST_FLOOR_SLAB_COMPLETED: frappe._dict(
+        KallatPlotStatus.FIRST_FLOOR_SLAB_COMPLETED: frappe._dict(
             type="Percent", percent=20,
         ),
-        KallatUnitStatus.STRUCTURE_COMPLETED: frappe._dict(
+        KallatPlotStatus.STRUCTURE_COMPLETED: frappe._dict(
             type="Percent", percent=5,
         ),
-        KallatUnitStatus.TILING_COMPLETED: frappe._dict(
+        KallatPlotStatus.TILING_COMPLETED: frappe._dict(
             type="Percent", percent=3
         ),
-        KallatUnitStatus.HAND_OVER_COMPLETED: frappe._dict(
+        KallatPlotStatus.HAND_OVER_COMPLETED: frappe._dict(
             type="Percent", percent=2
         )
     }
