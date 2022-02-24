@@ -46,7 +46,11 @@ PAYMENT_SCHEDULE = frappe._dict(
 
 class UnitSale(Document):
     def validate(self):
-        self.validate_unit()
+        self.suggested_price = 0
+        self.validate_plot()
+        self.validate_unit_type()
+
+        self.suggested_price = flt(self.suggested_price, precision=2)
 
     def before_submit(self):
         self.schedule_due_payment(
@@ -54,16 +58,22 @@ class UnitSale(Document):
             auto_save=False
         )
 
-    def validate_unit(self):
-        unit = frappe.get_doc("Kallat Unit", self.unit)
-        if unit.project != self.project:
-            frappe.throw(f"Unit {unit.title} do not belong to project {self.project}")
+    def validate_plot(self):
+        plot = frappe.get_doc("Kallat Plot", self.plot)
+        if plot.project != self.project:
+            frappe.throw(f"Plot {plot.title} do not belong to project {self.project}")
 
-        self.unit_price = unit.price
+        self.suggested_price += flt(plot.price)
 
-    def update_unit_status(self):
-        unit_status = frappe.db.get_value("Kallat Unit", self.unit, "status")
-        self.unit_status = unit_status
+    def validate_unit_type(self):
+        unit_type = frappe.get_doc("Kallat Unit Type", self.unit_type)
+        if unit_type.project != self.project:
+            frappe.throw(f"UnitType {unit_type.title} do not belong to project {self.project}")
+
+        self.suggested_price += flt(unit_type.price)
+
+    def update_plot_status(self):
+        self.plot_status = frappe.db.get_value("Kallat Plot", self.plot, "status")
 
     def calculate_totals(self):
         self.total_due = flt(sum(x.amount for x in self.scheduled_payments), precision=2)
@@ -92,7 +102,7 @@ class UnitSale(Document):
             amount=amount
         ))
         self.calculate_totals()
-        self.update_unit_status()
+        self.update_plot_status()
         if auto_save:
             self.flags.ignore_validate_update_after_submit = True
             self.save()

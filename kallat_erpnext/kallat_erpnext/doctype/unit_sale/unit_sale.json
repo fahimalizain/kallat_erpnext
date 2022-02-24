@@ -13,8 +13,9 @@
   "column_break_3",
   "project",
   "plot",
-  "unit_status",
-  "unit_price",
+  "unit_type",
+  "plot_status",
+  "suggested_price",
   "amended_from",
   "section_break_6",
   "scheduled_payments",
@@ -117,19 +118,6 @@
    "reqd": 1
   },
   {
-   "default": "Empty Plot",
-   "fieldname": "unit_status",
-   "fieldtype": "Data",
-   "label": "Unit Status",
-   "read_only": 1
-  },
-  {
-   "fieldname": "unit_price",
-   "fieldtype": "Currency",
-   "label": "Unit Price",
-   "read_only": 1
-  },
-  {
    "fieldname": "agreement_file",
    "fieldtype": "Attach",
    "label": "Agreement File",
@@ -142,12 +130,32 @@
    "label": "Plot",
    "options": "Kallat Plot",
    "reqd": 1
+  },
+  {
+   "default": "Empty Plot",
+   "fieldname": "plot_status",
+   "fieldtype": "Data",
+   "label": "Plot Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "unit_type",
+   "fieldtype": "Link",
+   "label": "Unit Type",
+   "options": "Kallat Unit Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "suggested_price",
+   "fieldtype": "Currency",
+   "label": "Suggested Price",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-02-24 14:14:55.706836",
+ "modified": "2022-02-24 15:14:29.741437",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",

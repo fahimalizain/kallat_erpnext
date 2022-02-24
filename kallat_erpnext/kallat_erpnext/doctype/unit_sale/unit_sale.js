@@ -5,7 +5,7 @@ frappe.ui.form.on("Unit Sale", {
   refresh: function (frm) {
     if (!frm.doc.date_time) {
       // Set now date
-      frm.set_value("date_time", new Date());
+      frm.set_value("date_time", frappe.datetime.now_datetime());
     }
 
     if (frm.doc.docstatus === 1) {
