@@ -14,14 +14,13 @@
   "project",
   "plot",
   "unit_type",
-  "plot_status",
+  "work_status",
   "suggested_price",
   "amended_from",
-  "section_break_6",
-  "scheduled_payments",
+  "section_break_12",
+  "events_html",
+  "section_break_13",
   "total_due",
-  "section_break_8",
-  "payments_received",
   "total_received",
   "column_break_12",
   "balance_amount"
@@ -60,28 +59,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "section_break_6",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "scheduled_payments",
-   "fieldtype": "Table",
-   "label": "Scheduled Payments",
-   "options": "Unit Sale Scheduled Payment",
-   "read_only": 1
-  },
-  {
-   "fieldname": "section_break_8",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "payments_received",
-   "fieldtype": "Table",
-   "label": "Payments Received",
-   "options": "Unit Sale Received Payment",
-   "read_only": 1
-  },
-  {
    "fieldname": "total_due",
    "fieldtype": "Currency",
    "label": "Total Due",
@@ -108,14 +85,12 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "Booked",
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Booked\nAgreement Signed\nWork In Progress\nCompleted",
-   "read_only": 1,
-   "reqd": 1
+   "options": "\nBooked\nAgreement Signed\nWork In Progress\nCompleted",
+   "read_only": 1
   },
   {
    "fieldname": "agreement_file",
@@ -132,13 +107,6 @@
    "reqd": 1
   },
   {
-   "default": "Empty Plot",
-   "fieldname": "plot_status",
-   "fieldtype": "Data",
-   "label": "Plot Status",
-   "read_only": 1
-  },
-  {
    "fieldname": "unit_type",
    "fieldtype": "Link",
    "label": "Unit Type",
@@ -150,12 +118,34 @@
    "fieldtype": "Currency",
    "label": "Suggested Price",
    "read_only": 1
+  },
+  {
+   "default": "Not Started",
+   "fieldname": "work_status",
+   "fieldtype": "Select",
+   "label": "Work Status",
+   "options": "Not Started\nFoundation Completed\n1st Floor Slab Completed\nStructure Completed\nTiling Completed",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.docstatus !== 0",
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "events_html",
+   "fieldtype": "HTML",
+   "label": "Events HTML"
+  },
+  {
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-02-24 15:14:29.741437",
+ "modified": "2022-03-02 18:34:41.101805",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",

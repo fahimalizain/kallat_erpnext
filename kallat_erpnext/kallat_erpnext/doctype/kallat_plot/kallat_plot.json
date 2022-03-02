@@ -43,7 +43,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Empty Plot\nFoundation Completed\n1st Floor Slab Completed\nStructure Completed\nTiling Completed\nHand Over Completed",
+   "options": "Empty Plot\nBooked\nWork In Progress\nCompleted",
    "read_only": 1,
    "reqd": 1
   },
@@ -59,13 +59,13 @@
    "fieldname": "status_updates",
    "fieldtype": "Table",
    "label": "Status Updates",
-   "options": "Kallat Unit Status Update",
+   "options": "Kallat Plot Status Update",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-02-17 21:02:52.076708",
+ "modified": "2022-03-01 20:55:28.833581",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Kallat Plot",

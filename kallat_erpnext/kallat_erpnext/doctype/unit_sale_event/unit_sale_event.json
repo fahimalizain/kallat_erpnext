@@ -1,0 +1,134 @@
+{
+ "actions": [],
+ "autoname": "format:{unit_sale}-{##}",
+ "creation": "2022-03-01 20:46:22.347941",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "unit_sale",
+  "type",
+  "amount_due",
+  "column_break_2",
+  "date_time",
+  "amended_from",
+  "section_break_3",
+  "new_status",
+  "work_remarks",
+  "section_break_7",
+  "amount_received",
+  "section_break_9",
+  "late_fee_amount",
+  "late_fee_remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "unit_sale",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Unit Sale",
+   "options": "Unit Sale",
+   "reqd": 1
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "Unit Sale Update\nWork Status Update\nPayment Receipt\nLate Fee Applied",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.type == \"Work Status Update\" || doc.type == \"Unit Sale Update\"",
+   "fieldname": "section_break_3",
+   "fieldtype": "Section Break",
+   "label": "Status Update"
+  },
+  {
+   "fieldname": "new_status",
+   "fieldtype": "Data",
+   "label": "New Status"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Unit Sale Event",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "work_remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "depends_on": "eval:doc.type == \"Payment Receipt\"",
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break",
+   "label": "Payment Receipt"
+  },
+  {
+   "fieldname": "amount_received",
+   "fieldtype": "Currency",
+   "label": "Amount Received"
+  },
+  {
+   "depends_on": "eval:doc.type == \"Late Fee Applied\"",
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break",
+   "label": "Late Fee"
+  },
+  {
+   "fieldname": "late_fee_amount",
+   "fieldtype": "Currency",
+   "label": "Late Fee Amount"
+  },
+  {
+   "fieldname": "late_fee_remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "date_time",
+   "fieldtype": "Datetime",
+   "label": "Date Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount_due",
+   "fieldtype": "Currency",
+   "label": "Amount Due",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2022-03-02 19:46:25.256132",
+ "modified_by": "Administrator",
+ "module": "Kallat Erpnext",
+ "name": "Unit Sale Event",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

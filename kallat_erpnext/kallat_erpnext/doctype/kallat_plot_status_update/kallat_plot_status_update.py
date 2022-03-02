@@ -4,5 +4,5 @@
 # import frappe
 from frappe.model.document import Document
 
-class KallatUnitStatusUpdate(Document):
+class KallatPlotStatusUpdate(Document):
 	pass
