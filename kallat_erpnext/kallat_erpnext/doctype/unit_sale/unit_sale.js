@@ -8,8 +8,9 @@ kallat_erpnext.UNIT_SALE_TYPE = {
 };
 
 kallat_erpnext.UNIT_SALE_STATUS = {
-  BOOKED: "Booked"
-}
+  BOOKED: "Booked",
+  AGREEMENT_SIGNED: "Agreement Signed",
+};
 
 frappe.ui.form.on("Unit Sale", {
   refresh: function (frm) {
@@ -174,8 +175,13 @@ frappe.ui.form.on("Unit Sale", {
         pillText = "Payment";
       } else if (event.type == kallat_erpnext.UNIT_SALE_TYPE.UNIT_SALE_UPDATE) {
         if (event.new_status == kallat_erpnext.UNIT_SALE_STATUS.BOOKED) {
-          pillClass = "green"
-          pillText = "Booking Confirmed"
+          pillClass = "green";
+          pillText = "Booking Confirmed";
+        } else if (
+          event.new_status == kallat_erpnext.UNIT_SALE_STATUS.AGREEMENT_SIGNED
+        ) {
+          pillClass = "lightblue";
+          pillText = "Agreement Signed";
         }
       }
       return `
@@ -188,11 +194,24 @@ frappe.ui.form.on("Unit Sale", {
     const getEventTypeContent = (event) => {
       if (event.type == kallat_erpnext.UNIT_SALE_TYPE.PAYMENT_RECEIPT) {
         return `
-        <div class="text-muted">Received: ${format_currency(event.amount_received)}</div>
+        <div class="text-muted">Received: ${format_currency(
+          event.amount_received
+        )}</div>
         `;
+      } else if (event.type == kallat_erpnext.UNIT_SALE_TYPE.UNIT_SALE_UPDATE) {
+        if (
+          event.new_status == kallat_erpnext.UNIT_SALE_STATUS.AGREEMENT_SIGNED
+        ) {
+          const misc = JSON.parse(event.misc);
+          return `
+          <div class="text-muted">Final Price: ${format_currency(
+            misc.final_price
+          )}</div>
+        `;
+        }
       }
 
-      return ""
+      return "";
     };
 
     const timelineItems = [];

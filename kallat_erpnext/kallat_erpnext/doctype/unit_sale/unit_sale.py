@@ -81,19 +81,17 @@ class UnitSale(Document):
         self.reload()
 
     @frappe.whitelist()
-    def sign_agreement(self, agreement_file, remarks=None):
-        # if UnitSaleStatuses(self.status) != UnitSaleStatuses.BOOKED:
-        #     frappe.throw("Invalid OP")
-
-        # file = frappe.db.get_value("File", {"file_url": agreement_file})
-        # if not file:
-        #     frappe.throw("File not found, Please re-upload ?")
-
-        # # Attach file to this Sale
-        # self.status = UnitSaleStatuses.WIP.value  # Let's start work!
-        # self.agreement_file = agreement_file
-        # self.schedule_due_payment(
-        #     new_status=UnitSaleStatuses.AGREEMENT_SIGNED,
-        #     remarks=remarks or "Agreement Signed"
-        # )
+    def sign_agreement(self, agreement_file, final_price, remarks=None):
+        frappe.get_doc(dict(
+            doctype="Unit Sale Event",
+            type=UnitSaleEventType.UNIT_SALE_UPDATE.value,
+            new_status=UnitSaleStatus.AGREEMENT_SIGNED.value,
+            unit_sale=self.name,
+            remarks=remarks,
+            docstatus=1,
+            misc=frappe.as_json(dict(
+                agreement_file=agreement_file,
+                final_price=flt(final_price, precision=2)
+            ))
+        )).insert(ignore_permissions=True)
         pass

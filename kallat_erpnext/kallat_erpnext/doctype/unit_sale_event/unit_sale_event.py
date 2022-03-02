@@ -13,14 +13,15 @@ from kallat_erpnext.kallat_erpnext import (
     UnitWorkStatus,
     KallatPlotStatus,
     UnitSaleEventType)
-from .handlers import on_booking
+from .handlers import on_booking, on_signing_agreement
 
 if TYPE_CHECKING:
     from kallat_erpnext.kallat_erpnext.doctype.unit_sale.unit_sale import UnitSale
 
 EVENT_HANDLERS = frappe._dict({
     UnitSaleEventType.UNIT_SALE_UPDATE: frappe._dict({
-        UnitSaleStatus.BOOKED: on_booking
+        UnitSaleStatus.BOOKED: on_booking,
+        UnitSaleStatus.AGREEMENT_SIGNED: on_signing_agreement
     })
 })
 

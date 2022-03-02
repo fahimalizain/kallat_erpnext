@@ -15,7 +15,8 @@
   "date_time",
   "amount_received",
   "amended_from",
-  "remarks"
+  "remarks",
+  "misc"
  ],
  "fields": [
   {
@@ -78,12 +79,17 @@
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks"
+  },
+  {
+   "fieldname": "misc",
+   "fieldtype": "Small Text",
+   "label": "Misc"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-03-02 19:55:04.296621",
+ "modified": "2022-03-02 22:03:07.108044",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale Event",
