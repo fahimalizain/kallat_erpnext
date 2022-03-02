@@ -1,6 +1,9 @@
 # Copyright (c) 2022, Fahim Ali Zain and contributors
 # For license information, please see license.txt
 
+from typing import TYPE_CHECKING
+
+
 import frappe
 from frappe.utils import flt, now
 from frappe.model.document import Document
@@ -12,6 +15,8 @@ from kallat_erpnext.kallat_erpnext import (
     UnitSaleEventType)
 from .handlers import on_booking
 
+if TYPE_CHECKING:
+    from kallat_erpnext.kallat_erpnext.doctype.unit_sale.unit_sale import UnitSale
 
 EVENT_HANDLERS = frappe._dict({
     UnitSaleEventType.UNIT_SALE_UPDATE: frappe._dict({
@@ -48,23 +53,30 @@ PAYMENT_SCHEDULE = frappe._dict(
 
 
 class UnitSaleEvent(Document):
+
+    unit_sale_doc: "UnitSale"
+
     def validate(self):
         if not self.date_time:
             self.date_time = now()
 
-    def on_submit(self):
+    def before_submit(self):
+        self.unit_sale_doc = frappe.get_doc("Unit Sale", self.unit_sale)
+
         event_type = UnitSaleEventType(self.type)
-        if event_type not in EVENT_HANDLERS:
-            return
+        if event_type in EVENT_HANDLERS:
+            if event_type == UnitSaleEventType.UNIT_SALE_UPDATE:
+                sub_type = UnitSaleStatus(self.new_status)
+            elif event_type == UnitSaleEventType.WORK_STATUS_UPDATE:
+                sub_type = UnitWorkStatus(self.new_status)
 
-        if event_type == UnitSaleEventType.UNIT_SALE_UPDATE:
-            sub_type = UnitSaleStatus(self.new_status)
-        elif event_type == UnitSaleEventType.WORK_STATUS_UPDATE:
-            sub_type = UnitWorkStatus(self.new_status)
+            EVENT_HANDLERS[event_type].get(sub_type, lambda *args, **kwargs: None)(
+                event_doc=self
+            )
 
-        EVENT_HANDLERS[event_type].get(sub_type, lambda *args, **kwargs: None)(
-            event_doc=self
-        )
+    def on_submit(self):
+        self.unit_sale_doc.flags.ignore_validate_update_after_submit = True
+        self.unit_sale_doc.save(ignore_permissions=True)
 
     def get_plot(self):
         return frappe.db.get_value("Unit Sale", self.unit_sale, "plot")

@@ -1,6 +1,7 @@
 # Copyright (c) 2022, Fahim Ali Zain and contributors
 # For license information, please see license.txt
 
+
 import frappe
 
 # import frappe
@@ -10,6 +11,7 @@ from kallat_erpnext.kallat_erpnext import UnitSaleEventType, UnitSaleStatus
 
 
 class UnitSale(Document):
+
     def validate(self):
         self.suggested_price = 0
         self.validate_plot()
@@ -20,17 +22,9 @@ class UnitSale(Document):
     def before_update_after_submit(self):
         self.update_due_and_received()
 
-    def on_submit(self):
+    def before_submit(self):
         self.status = None
-        frappe.get_doc(dict(
-            doctype="Unit Sale Event",
-            type=UnitSaleEventType.UNIT_SALE_UPDATE.value,
-            new_status=UnitSaleStatus.BOOKED.value,
-            unit_sale=self.name,
-            remarks="Unit Booked",
-            docstatus=1
-        )).insert(ignore_permissions=True)
-        self.reload()
+        self.update_due_and_received()
 
     def validate_plot(self):
         plot = frappe.get_doc("Kallat Plot", self.plot)
@@ -53,7 +47,38 @@ class UnitSale(Document):
                 "amount_received", "amount_due"])
         self.total_due = flt(sum(x.amount_due for x in events), precision=2)
         self.total_received = flt(sum(x.amount_received for x in events), precision=2)
-        self.balance_amount = flt(self.unit_price - self.total_received, precision=2)
+        self.balance_amount = flt((self.final_price or self.suggested_price)
+                                  - self.total_received, precision=2)
+
+    @frappe.whitelist()
+    def get_events(self):
+        return frappe.get_all("Unit Sale Event", {
+            "docstatus": 1, "unit_sale": self.name,
+        }, ["*"], order_by="creation asc")
+
+    @frappe.whitelist()
+    def make_payment_receipt(self, amount_received, remarks=None):
+        frappe.get_doc(dict(
+            doctype="Unit Sale Event",
+            type=UnitSaleEventType.PAYMENT_RECEIPT.value,
+            unit_sale=self.name,
+            remarks=remarks,
+            amount_received=amount_received,
+            docstatus=1
+        )).insert(ignore_permissions=True)
+        self.reload()
+
+    @frappe.whitelist()
+    def confirm_booking(self):
+        frappe.get_doc(dict(
+            doctype="Unit Sale Event",
+            type=UnitSaleEventType.UNIT_SALE_UPDATE.value,
+            new_status=UnitSaleStatus.BOOKED.value,
+            unit_sale=self.name,
+            remarks="Unit Booked",
+            docstatus=1
+        )).insert(ignore_permissions=True)
+        self.reload()
 
     @frappe.whitelist()
     def sign_agreement(self, agreement_file, remarks=None):

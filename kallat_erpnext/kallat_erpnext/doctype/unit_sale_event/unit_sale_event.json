@@ -8,18 +8,14 @@
  "field_order": [
   "unit_sale",
   "type",
+  "new_status",
   "amount_due",
+  "late_fee_amount",
   "column_break_2",
   "date_time",
-  "amended_from",
-  "section_break_3",
-  "new_status",
-  "work_remarks",
-  "section_break_7",
   "amount_received",
-  "section_break_9",
-  "late_fee_amount",
-  "late_fee_remarks"
+  "amended_from",
+  "remarks"
  ],
  "fields": [
   {
@@ -39,12 +35,6 @@
    "reqd": 1
   },
   {
-   "depends_on": "eval:doc.type == \"Work Status Update\" || doc.type == \"Unit Sale Update\"",
-   "fieldname": "section_break_3",
-   "fieldtype": "Section Break",
-   "label": "Status Update"
-  },
-  {
    "fieldname": "new_status",
    "fieldtype": "Data",
    "label": "New Status"
@@ -59,36 +49,14 @@
    "read_only": 1
   },
   {
-   "fieldname": "work_remarks",
-   "fieldtype": "Small Text",
-   "label": "Remarks"
-  },
-  {
-   "depends_on": "eval:doc.type == \"Payment Receipt\"",
-   "fieldname": "section_break_7",
-   "fieldtype": "Section Break",
-   "label": "Payment Receipt"
-  },
-  {
    "fieldname": "amount_received",
    "fieldtype": "Currency",
    "label": "Amount Received"
   },
   {
-   "depends_on": "eval:doc.type == \"Late Fee Applied\"",
-   "fieldname": "section_break_9",
-   "fieldtype": "Section Break",
-   "label": "Late Fee"
-  },
-  {
    "fieldname": "late_fee_amount",
    "fieldtype": "Currency",
    "label": "Late Fee Amount"
-  },
-  {
-   "fieldname": "late_fee_remarks",
-   "fieldtype": "Small Text",
-   "label": "Remarks"
   },
   {
    "fieldname": "column_break_2",
@@ -105,12 +73,17 @@
    "fieldtype": "Currency",
    "label": "Amount Due",
    "read_only": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-03-02 19:46:25.256132",
+ "modified": "2022-03-02 19:55:04.296621",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale Event",

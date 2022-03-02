@@ -10,6 +10,7 @@
   "customer",
   "status",
   "agreement_file",
+  "final_price",
   "column_break_3",
   "project",
   "plot",
@@ -128,7 +129,6 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.docstatus !== 0",
    "fieldname": "section_break_12",
    "fieldtype": "Section Break"
   },
@@ -140,12 +140,18 @@
   {
    "fieldname": "section_break_13",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "final_price",
+   "fieldtype": "Currency",
+   "label": "Final Price",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-03-02 18:34:41.101805",
+ "modified": "2022-03-02 21:24:29.755101",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",
