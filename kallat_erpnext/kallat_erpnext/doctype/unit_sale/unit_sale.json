@@ -22,6 +22,7 @@
   "events_html",
   "section_break_13",
   "total_due",
+  "total_fine",
   "total_received",
   "column_break_12",
   "balance_amount"
@@ -60,6 +61,7 @@
    "read_only": 1
   },
   {
+   "description": "Includes Fines",
    "fieldname": "total_due",
    "fieldtype": "Currency",
    "label": "Total Due",
@@ -146,12 +148,18 @@
    "fieldtype": "Currency",
    "label": "Final Price",
    "read_only": 1
+  },
+  {
+   "fieldname": "total_fine",
+   "fieldtype": "Currency",
+   "label": "Total Fine",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-03-02 21:24:29.755101",
+ "modified": "2022-03-02 22:48:15.565789",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",

@@ -47,7 +47,7 @@ class UnitSale(Document):
                 "amount_received", "amount_due"])
         self.total_due = flt(sum(x.amount_due for x in events), precision=2)
         self.total_received = flt(sum(x.amount_received for x in events), precision=2)
-        self.balance_amount = flt((self.final_price or self.suggested_price)
+        self.balance_amount = flt((self.final_price or self.suggested_price) + flt(self.total_fine)
                                   - self.total_received, precision=2)
 
     @frappe.whitelist()
