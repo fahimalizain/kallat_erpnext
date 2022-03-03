@@ -42,5 +42,6 @@ def on_signing_agreement(event_doc: "UnitSaleEvent"):
     event_doc.update_plot_status(KallatPlotStatus.WIP)
     unit_sale.update(dict(
         status=UnitSaleStatus.WIP.value,
-        final_price=info.final_price
+        final_price=info.final_price,
+        agreement_file=info.agreement_file
     ))

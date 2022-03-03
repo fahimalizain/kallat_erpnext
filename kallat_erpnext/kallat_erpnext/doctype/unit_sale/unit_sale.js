@@ -1,16 +1,25 @@
 // Copyright (c) 2022, Fahim Ali Zain and contributors
 // For license information, please see license.txt
 
-frappe.provide("kallat_erpnext");
-kallat_erpnext.UNIT_SALE_TYPE = {
+frappe.provide("kallat");
+kallat.UNIT_SALE_TYPE = {
   PAYMENT_RECEIPT: "Payment Receipt",
   UNIT_SALE_UPDATE: "Unit Sale Update",
 };
 
-kallat_erpnext.UNIT_SALE_STATUS = {
+kallat.UNIT_SALE_STATUS = {
   BOOKED: "Booked",
   AGREEMENT_SIGNED: "Agreement Signed",
 };
+
+kallat.WORK_STATUSES = [
+  "Not Started",
+  "Foundation Completed",
+  "1st Floor Slab Completed",
+  "Structure Completed",
+  "Tiling Completed",
+  "Hand Over Completed",
+];
 
 frappe.ui.form.on("Unit Sale", {
   refresh: function (frm) {
@@ -20,6 +29,7 @@ frappe.ui.form.on("Unit Sale", {
     }
 
     if (frm.doc.docstatus === 1) {
+      // Confirm
       if (frm.doc.status === "" || !frm.doc.status) {
         frm.add_custom_button("Confirm Booking", () => {
           frappe.confirm("Are you sure to confirm the Booking ?", () => {
@@ -39,12 +49,21 @@ frappe.ui.form.on("Unit Sale", {
             });
           });
         });
-      } else if (frm.doc.status === "Booked") {
+      }
+      // Sign Agreement
+      else if (frm.doc.status === "Booked") {
         frm.add_custom_button("Sign Agreement", () => {
           frm.events.show_agreement_form(frm);
         });
       }
+      // Work Progress Updates
+      else if (frm.doc.status == "Work In Progress") {
+        frm.add_custom_button("Update Work Progress", () => {
+          frm.events.show_work_progress_form(frm);
+        });
+      }
 
+      // Payment Receipt
       if (frm.doc.balance_amount > 0) {
         frm.add_custom_button("Make Payment Receipt", () => {
           frm.events.show_payment_receipt_form(frm);
@@ -166,19 +185,88 @@ frappe.ui.form.on("Unit Sale", {
     d.show();
   },
 
+  show_work_progress_form(frm) {
+    const statusIdx = kallat.WORK_STATUSES.indexOf(frm.doc.work_status);
+    if (statusIdx + 1 >= kallat.WORK_STATUSES.length) {
+      console.log("At final status now");
+      return;
+    }
+    const nextStatus = kallat.WORK_STATUSES[statusIdx + 1];
+    let fileIdx = 0;
+
+    const d = new frappe.ui.Dialog({
+      title: "Update Unit Status",
+      fields: [
+        {
+          label: "Next Status",
+          fieldtype: "Data",
+          read_only: 1,
+          fieldname: "new_status",
+          default: nextStatus,
+        },
+        {
+          label: "Remarks",
+          fieldtype: "Small Text",
+          fieldname: "remarks",
+        },
+        {
+          label: "Add File",
+          fieldtype: "Button",
+          click: () => {
+            fileIdx++;
+
+            const fieldName = "file-" + fileIdx;
+            d.make_field({
+              label: "File-" + fileIdx,
+              fieldname: fieldName,
+              fieldtype: "Attach",
+              reqd: 1,
+            });
+            d.fields_dict[fieldName].refresh();
+          },
+        },
+      ],
+      primary_action_label: "Update",
+      primary_action(values) {
+        frm.call({
+          method: "update_work_status",
+          doc: frm.doc,
+          freeze: true,
+          args: values,
+          callback(r) {
+            if (r.exc) {
+              frappe.msgprint(
+                "Something went wrong! Please try again or Contact Developer"
+              );
+            } else {
+              frappe.msgprint("Status Updated!");
+              setTimeout(() => {
+                location.reload();
+              }, 2000);
+              d.hide();
+            }
+          },
+        });
+      },
+    });
+
+    d.show();
+    console.log(d);
+  },
+
   make_events_html(frm, events) {
     const getEventTypePill = (event) => {
       let pillClass = "red";
       let pillText = event.type;
-      if (event.type === kallat_erpnext.UNIT_SALE_TYPE.PAYMENT_RECEIPT) {
+      if (event.type === kallat.UNIT_SALE_TYPE.PAYMENT_RECEIPT) {
         pillClass = "gray";
         pillText = "Payment";
-      } else if (event.type == kallat_erpnext.UNIT_SALE_TYPE.UNIT_SALE_UPDATE) {
-        if (event.new_status == kallat_erpnext.UNIT_SALE_STATUS.BOOKED) {
+      } else if (event.type == kallat.UNIT_SALE_TYPE.UNIT_SALE_UPDATE) {
+        if (event.new_status == kallat.UNIT_SALE_STATUS.BOOKED) {
           pillClass = "green";
           pillText = "Booking Confirmed";
         } else if (
-          event.new_status == kallat_erpnext.UNIT_SALE_STATUS.AGREEMENT_SIGNED
+          event.new_status == kallat.UNIT_SALE_STATUS.AGREEMENT_SIGNED
         ) {
           pillClass = "lightblue";
           pillText = "Agreement Signed";
@@ -192,16 +280,14 @@ frappe.ui.form.on("Unit Sale", {
     };
 
     const getEventTypeContent = (event) => {
-      if (event.type == kallat_erpnext.UNIT_SALE_TYPE.PAYMENT_RECEIPT) {
+      if (event.type == kallat.UNIT_SALE_TYPE.PAYMENT_RECEIPT) {
         return `
         <div class="text-muted">Received: ${format_currency(
           event.amount_received
         )}</div>
         `;
-      } else if (event.type == kallat_erpnext.UNIT_SALE_TYPE.UNIT_SALE_UPDATE) {
-        if (
-          event.new_status == kallat_erpnext.UNIT_SALE_STATUS.AGREEMENT_SIGNED
-        ) {
+      } else if (event.type == kallat.UNIT_SALE_TYPE.UNIT_SALE_UPDATE) {
+        if (event.new_status == kallat.UNIT_SALE_STATUS.AGREEMENT_SIGNED) {
           const misc = JSON.parse(event.misc);
           return `
           <div class="text-muted">Final Price: ${format_currency(

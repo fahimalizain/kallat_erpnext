@@ -94,4 +94,14 @@ class UnitSale(Document):
                 final_price=flt(final_price, precision=2)
             ))
         )).insert(ignore_permissions=True)
-        pass
+
+    @frappe.whitelist()
+    def update_work_status(self, new_status: str, remarks=None):
+        frappe.get_doc(dict(
+            doctype="Unit Sale Event",
+            type=UnitSaleEventType.WORK_STATUS_UPDATE.value,
+            new_status=UnitSaleStatus(new_status).value,
+            unit_sale=self.name,
+            remarks=remarks,
+            docstatus=1,
+        )).insert(ignore_permissions=True)
