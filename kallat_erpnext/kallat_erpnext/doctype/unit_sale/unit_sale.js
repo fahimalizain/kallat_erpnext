@@ -248,7 +248,7 @@ frappe.ui.form.on("Unit Sale", {
           method: "update_work_status",
           doc: frm.doc,
           freeze: true,
-          args: { ...values, no_files: fileIdx },
+          args: { ...values, num_files: fileIdx },
           callback(r) {
             if (r.exc) {
               frappe.msgprint(
@@ -312,7 +312,7 @@ frappe.ui.form.on("Unit Sale", {
           method: "hand_over_unit",
           doc: frm.doc,
           freeze: true,
-          args: { ...values, no_files: fileIdx },
+          args: { ...values, num_files: fileIdx },
           callback(r) {
             if (r.exc) {
               frappe.msgprint(
@@ -358,13 +358,13 @@ frappe.ui.form.on("Unit Sale", {
         pillText = event.new_status;
       }
       return `
-      <div class="indicator-pill whitespace-nowrap ${pillClass}">
+      <div class="indicator-pill whitespace-nowrap ${pillClass} mb-2">
         ${pillText}
       </div>
       `;
     };
 
-    const getEventTypeContent = (event) => {
+    const getEventTypeSubtitle = (event) => {
       if (event.type == kallat.UNIT_SALE_TYPE.PAYMENT_RECEIPT) {
         return `
         <div class="text-muted">Received: ${format_currency(
@@ -403,16 +403,19 @@ frappe.ui.form.on("Unit Sale", {
         <div class="timeline-dot"></div>
         <div class="timeline-content p-3" style="background-color: var(--bg-color)">
           <div class="d-flex flex-row">
-            ${getEventTypePill(event)}
-            <span class="px-2 flex-grow-1">${moment(event.creation).format(
-              "Do MMM YY"
-            )}</span>
-            <a class="text-muted" href="/app/unit-sale-event/${event.name}">${
-        event.name
-      }</a>
-          </div>
-          <div class="flex-row">
-            ${getEventTypeContent(event)}
+            <div class="flex-column flex-grow-1 align-items-start justify-content-center">
+              ${getEventTypePill(event)}
+              ${getEventTypeSubtitle(event)}
+            </div>
+
+            <div class="flex-column">
+              <span class="px-2 flex-grow-1">${moment(event.creation).format(
+                "Do MMM YY"
+              )}</span>
+              <a class="text-muted" href="/app/unit-sale-event/${event.name}">${
+                event.name
+              }</a>
+            </div>
           </div>
         </div>
       </div>

@@ -99,8 +99,7 @@ class UnitSale(Document):
 
     @frappe.whitelist()
     def update_work_status(self, new_status: str, remarks=None, **kwargs):
-        print(kwargs)
-        frappe.get_doc(dict(
+        event_doc = frappe.get_doc(dict(
             doctype="Unit Sale Event",
             type=UnitSaleEventType.WORK_STATUS_UPDATE.value,
             new_status=UnitWorkStatus(new_status).value,
@@ -108,11 +107,11 @@ class UnitSale(Document):
             remarks=remarks,
             docstatus=1,
         )).insert(ignore_permissions=True)
+        self.link_event_files(event_doc, kwargs)
 
     @frappe.whitelist()
     def hand_over_unit(self, remarks=None, **kwargs):
-        print(kwargs)
-        frappe.get_doc(dict(
+        event_doc = frappe.get_doc(dict(
             doctype="Unit Sale Event",
             type=UnitSaleEventType.UNIT_SALE_UPDATE.value,
             new_status=UnitSaleStatus.HANDED_OVER.value,
@@ -120,3 +119,27 @@ class UnitSale(Document):
             remarks=remarks,
             docstatus=1,
         )).insert(ignore_permissions=True)
+        self.link_event_files(event_doc, kwargs)
+
+    def link_event_files(self, event_doc, files):
+        if not files or "num_files" not in files:
+            return
+
+        num_files = files.get("num_files")
+        file_urls = set()
+        for i in range(1, num_files + 1):
+            k = f"file_{i}"
+            if k not in files:
+                continue
+            file_urls.add(files.get(k))
+
+        for file_url in file_urls:
+            file = frappe.db.get_value("File", {"file_url": file_url})
+            frappe.db.set_value(
+                "File",
+                file,
+                dict(
+                    attached_to_doctype="Unit Sale Event",
+                    attached_to_name=event_doc.name,
+                )
+            )
