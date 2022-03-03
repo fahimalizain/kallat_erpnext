@@ -5,15 +5,21 @@ from typing import TYPE_CHECKING
 
 
 import frappe
-from frappe.utils import flt, now
+from frappe.utils import now
 from frappe.model.document import Document
 
 from kallat_erpnext.kallat_erpnext import (
     UnitSaleStatus,
-    UnitWorkStatus,
+    # UnitWorkStatus,
     KallatPlotStatus,
     UnitSaleEventType)
-from .handlers import on_booking, on_signing_agreement
+from .handlers import (
+    on_payment_receipt_up, on_payment_receipt_down,
+    on_booking,
+    on_signing_agreement,
+    on_handing_over,
+    on_work_status_update_up,
+    on_work_status_update_down)
 
 if TYPE_CHECKING:
     from kallat_erpnext.kallat_erpnext.doctype.unit_sale.unit_sale import UnitSale
@@ -21,36 +27,15 @@ if TYPE_CHECKING:
 EVENT_HANDLERS = frappe._dict({
     UnitSaleEventType.UNIT_SALE_UPDATE: frappe._dict({
         UnitSaleStatus.BOOKED: on_booking,
-        UnitSaleStatus.AGREEMENT_SIGNED: on_signing_agreement
-    })
+        UnitSaleStatus.AGREEMENT_SIGNED: on_signing_agreement,
+        UnitSaleStatus.HANDED_OVER: on_handing_over,
+    }),
+    UnitSaleEventType.WORK_STATUS_UPDATE: dict(
+        up=on_work_status_update_up, down=on_work_status_update_down),
+    UnitSaleEventType.PAYMENT_RECEIPT: dict(
+        up=on_payment_receipt_up, down=on_payment_receipt_down,
+    )
 })
-
-
-PAYMENT_SCHEDULE = frappe._dict(
-    {
-        UnitSaleStatus.BOOKED: frappe._dict(
-            type="Fixed", amount=250000, remarks="Booking Fee"
-        ),
-        UnitSaleStatus.AGREEMENT_SIGNED: frappe._dict(
-            type="Percent", percent=40, consider_already_paid=True,
-        ),
-        KallatPlotStatus.FOUNDATION_COMPLETED: frappe._dict(
-            type="Percent", percent=30,
-        ),
-        KallatPlotStatus.FIRST_FLOOR_SLAB_COMPLETED: frappe._dict(
-            type="Percent", percent=20,
-        ),
-        KallatPlotStatus.STRUCTURE_COMPLETED: frappe._dict(
-            type="Percent", percent=5,
-        ),
-        KallatPlotStatus.TILING_COMPLETED: frappe._dict(
-            type="Percent", percent=3
-        ),
-        KallatPlotStatus.HAND_OVER_COMPLETED: frappe._dict(
-            type="Percent", percent=2
-        )
-    }
-)
 
 
 class UnitSaleEvent(Document):
@@ -62,22 +47,38 @@ class UnitSaleEvent(Document):
             self.date_time = now()
 
     def before_submit(self):
-        self.unit_sale_doc = frappe.get_doc("Unit Sale", self.unit_sale)
-
-        event_type = UnitSaleEventType(self.type)
-        if event_type in EVENT_HANDLERS:
-            if event_type == UnitSaleEventType.UNIT_SALE_UPDATE:
-                sub_type = UnitSaleStatus(self.new_status)
-            elif event_type == UnitSaleEventType.WORK_STATUS_UPDATE:
-                sub_type = UnitWorkStatus(self.new_status)
-
-            EVENT_HANDLERS[event_type].get(sub_type, lambda *args, **kwargs: None)(
-                event_doc=self
-            )
+        self.run_handler(for_cancel=False)
 
     def on_submit(self):
         self.unit_sale_doc.flags.ignore_validate_update_after_submit = True
         self.unit_sale_doc.save(ignore_permissions=True)
+
+    def on_cancel(self):
+        self.run_handler(for_cancel=True)
+        self.unit_sale_doc.flags.ignore_validate_update_after_submit = True
+        self.unit_sale_doc.save(ignore_permissions=True)
+
+    def run_handler(self, for_cancel=False):
+        self.unit_sale_doc = frappe.get_doc("Unit Sale", self.unit_sale)
+        event_type = UnitSaleEventType(self.type)
+        if event_type in EVENT_HANDLERS:
+            handler = None
+            if event_type == UnitSaleEventType.UNIT_SALE_UPDATE:
+                sub_type = UnitSaleStatus(self.new_status)
+                handler = EVENT_HANDLERS[event_type].get(sub_type)
+            elif event_type in (UnitSaleEventType.WORK_STATUS_UPDATE,
+                                UnitSaleEventType.PAYMENT_RECEIPT):
+                handler = EVENT_HANDLERS[event_type]
+
+            if isinstance(handler, dict):
+                handler = handler.get("up") if not for_cancel else handler.get("down")
+
+            if not handler:
+                return
+
+            handler(
+                event_doc=self
+            )
 
     def get_plot(self):
         return frappe.db.get_value("Unit Sale", self.unit_sale, "plot")
@@ -87,30 +88,3 @@ class UnitSaleEvent(Document):
         plot.flags.status_updated = True
         plot.status = new_status.value
         plot.save(ignore_permissions=True)
-
-    def schedule_due_payment(self, new_status, remarks=None, auto_save=True):
-        if new_status not in PAYMENT_SCHEDULE:
-            return
-
-        schedule = PAYMENT_SCHEDULE.get(new_status)
-        amount = 0
-        if schedule.type == "Fixed":
-            amount = schedule.amount
-        elif schedule.type == "Percent":
-            amount = self.unit_price * schedule.percent / 100
-
-        if schedule.consider_already_paid:
-            amount = amount - self.total_due
-
-        amount = flt(amount, precision=2)
-        self.append("scheduled_payments", dict(
-            remarks=remarks or schedule.get("remarks"),
-            type=schedule.get("type"),
-            percentage=schedule.get("percent"),
-            amount=amount
-        ))
-        self.calculate_totals()
-        self.update_plot_status()
-        if auto_save:
-            self.flags.ignore_validate_update_after_submit = True
-            self.save()

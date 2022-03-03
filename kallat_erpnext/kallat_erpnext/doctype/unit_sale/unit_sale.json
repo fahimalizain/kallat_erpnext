@@ -10,22 +10,23 @@
   "customer",
   "status",
   "agreement_file",
+  "suggested_price",
   "final_price",
   "column_break_3",
   "project",
   "plot",
   "unit_type",
   "work_status",
-  "suggested_price",
   "amended_from",
   "section_break_12",
   "events_html",
   "section_break_13",
   "total_due",
-  "total_fine",
   "total_received",
+  "balance_due",
   "column_break_12",
-  "balance_amount"
+  "total_fine",
+  "total_balance"
  ],
  "fields": [
   {
@@ -78,12 +79,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "balance_amount",
-   "fieldtype": "Currency",
-   "label": "Balance Amount",
-   "read_only": 1
-  },
-  {
    "fieldname": "column_break_3",
    "fieldtype": "Column Break"
   },
@@ -92,7 +87,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "\nBooked\nAgreement Signed\nWork In Progress\nCompleted",
+   "options": "\nBooked\nAgreement Signed\nWork In Progress\nHanded Over\nCompleted",
    "read_only": 1
   },
   {
@@ -117,6 +112,7 @@
    "reqd": 1
   },
   {
+   "depends_on": "eval:!doc.final_price",
    "fieldname": "suggested_price",
    "fieldtype": "Currency",
    "label": "Suggested Price",
@@ -154,12 +150,24 @@
    "fieldtype": "Currency",
    "label": "Total Fine",
    "read_only": 1
+  },
+  {
+   "fieldname": "balance_due",
+   "fieldtype": "Currency",
+   "label": "Balance Due",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_balance",
+   "fieldtype": "Currency",
+   "label": "Total Balance",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-03-02 22:48:15.565789",
+ "modified": "2022-03-03 12:05:47.135984",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",

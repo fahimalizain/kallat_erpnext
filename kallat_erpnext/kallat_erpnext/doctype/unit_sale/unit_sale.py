@@ -7,7 +7,7 @@ import frappe
 # import frappe
 from frappe.utils import flt
 from frappe.model.document import Document
-from kallat_erpnext.kallat_erpnext import UnitSaleEventType, UnitSaleStatus
+from kallat_erpnext.kallat_erpnext import UnitSaleEventType, UnitSaleStatus, UnitWorkStatus
 
 
 class UnitSale(Document):
@@ -47,8 +47,10 @@ class UnitSale(Document):
                 "amount_received", "amount_due"])
         self.total_due = flt(sum(x.amount_due for x in events), precision=2)
         self.total_received = flt(sum(x.amount_received for x in events), precision=2)
-        self.balance_amount = flt((self.final_price or self.suggested_price) + flt(self.total_fine)
-                                  - self.total_received, precision=2)
+        self.balance_due = max(0, flt(self.total_due - self.total_received))
+
+        self.total_balance = flt((self.final_price or self.suggested_price) + flt(self.total_fine)
+                                 - self.total_received, precision=2)
 
     @frappe.whitelist()
     def get_events(self):
@@ -96,11 +98,24 @@ class UnitSale(Document):
         )).insert(ignore_permissions=True)
 
     @frappe.whitelist()
-    def update_work_status(self, new_status: str, remarks=None):
+    def update_work_status(self, new_status: str, remarks=None, **kwargs):
+        print(kwargs)
         frappe.get_doc(dict(
             doctype="Unit Sale Event",
             type=UnitSaleEventType.WORK_STATUS_UPDATE.value,
-            new_status=UnitSaleStatus(new_status).value,
+            new_status=UnitWorkStatus(new_status).value,
+            unit_sale=self.name,
+            remarks=remarks,
+            docstatus=1,
+        )).insert(ignore_permissions=True)
+
+    @frappe.whitelist()
+    def hand_over_unit(self, remarks=None, **kwargs):
+        print(kwargs)
+        frappe.get_doc(dict(
+            doctype="Unit Sale Event",
+            type=UnitSaleEventType.UNIT_SALE_UPDATE.value,
+            new_status=UnitSaleStatus.HANDED_OVER.value,
             unit_sale=self.name,
             remarks=remarks,
             docstatus=1,

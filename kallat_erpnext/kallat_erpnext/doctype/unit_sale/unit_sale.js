@@ -5,11 +5,13 @@ frappe.provide("kallat");
 kallat.UNIT_SALE_TYPE = {
   PAYMENT_RECEIPT: "Payment Receipt",
   UNIT_SALE_UPDATE: "Unit Sale Update",
+  WORK_STATUS_UPDATE: "Work Status Update",
 };
 
 kallat.UNIT_SALE_STATUS = {
   BOOKED: "Booked",
   AGREEMENT_SIGNED: "Agreement Signed",
+  HANDED_OVER: "Handed Over"
 };
 
 kallat.WORK_STATUSES = [
@@ -28,6 +30,7 @@ frappe.ui.form.on("Unit Sale", {
       frm.set_value("date_time", frappe.datetime.now_datetime());
     }
 
+    $(frm.fields_dict["events_html"].wrapper).html(``);
     if (frm.doc.docstatus === 1) {
       // Confirm
       if (frm.doc.status === "" || !frm.doc.status) {
@@ -57,14 +60,26 @@ frappe.ui.form.on("Unit Sale", {
         });
       }
       // Work Progress Updates
-      else if (frm.doc.status == "Work In Progress") {
+      else if (
+        frm.doc.status == "Work In Progress" &&
+        frm.doc.work_status != "Tiling Completed"
+      ) {
         frm.add_custom_button("Update Work Progress", () => {
           frm.events.show_work_progress_form(frm);
         });
       }
+      // Handover
+      else if (
+        frm.doc.work_status == "Tiling Completed" &&
+        frm.doc.status == "Work In Progress"
+      ) {
+        frm.add_custom_button("Hand Over Unit", () => {
+          frm.events.show_hand_over_form(frm);
+        });
+      }
 
       // Payment Receipt
-      if (frm.doc.balance_amount > 0) {
+      if (frm.doc.total_balance > 0) {
         frm.add_custom_button("Make Payment Receipt", () => {
           frm.events.show_payment_receipt_form(frm);
         });
@@ -147,6 +162,7 @@ frappe.ui.form.on("Unit Sale", {
           fieldtype: "Currency",
           fieldname: "amount_received",
           reqd: 1,
+          default: frm.doc.balance_due,
         },
         {
           label: "Remarks",
@@ -215,7 +231,7 @@ frappe.ui.form.on("Unit Sale", {
           click: () => {
             fileIdx++;
 
-            const fieldName = "file-" + fileIdx;
+            const fieldName = "file_" + fileIdx;
             d.make_field({
               label: "File-" + fileIdx,
               fieldname: fieldName,
@@ -232,7 +248,7 @@ frappe.ui.form.on("Unit Sale", {
           method: "update_work_status",
           doc: frm.doc,
           freeze: true,
-          args: values,
+          args: { ...values, no_files: fileIdx },
           callback(r) {
             if (r.exc) {
               frappe.msgprint(
@@ -251,7 +267,70 @@ frappe.ui.form.on("Unit Sale", {
     });
 
     d.show();
-    console.log(d);
+  },
+
+  show_hand_over_form(frm) {
+    let fileIdx = 0;
+    const d = new frappe.ui.Dialog({
+      title: "Hand Over Unit",
+      fields: [
+        {
+          label: "Remarks",
+          fieldtype: "Small Text",
+          fieldname: "remarks",
+        },
+        {
+          label: "Add File",
+          fieldtype: "Button",
+          click: () => {
+            fileIdx++;
+
+            // if (fileIdx % 2 === 0) {
+            //   // Add Column Break
+            //   let df = "files_col_b_" + fileIdx
+            //   d.make_field({
+            //     fieldname: df,
+            //     fieldtype: "Column Break"
+            //   });
+            //   d.fields_dict[df].refresh();
+            // }
+
+            const fieldName = "file_" + fileIdx;
+            d.make_field({
+              label: "File-" + fileIdx,
+              fieldname: fieldName,
+              fieldtype: "Attach",
+              reqd: 1,
+            });
+            d.fields_dict[fieldName].refresh();
+          },
+        },
+      ],
+      primary_action_label: "Update",
+      primary_action(values) {
+        frm.call({
+          method: "hand_over_unit",
+          doc: frm.doc,
+          freeze: true,
+          args: { ...values, no_files: fileIdx },
+          callback(r) {
+            if (r.exc) {
+              frappe.msgprint(
+                "Something went wrong! Please try again or Contact Developer"
+              );
+            } else {
+              frappe.msgprint("Hand Over Done!");
+              setTimeout(() => {
+                location.reload();
+              }, 2000);
+              d.hide();
+            }
+          },
+        });
+      },
+    });
+
+    d.show();
   },
 
   make_events_html(frm, events) {
@@ -259,18 +338,24 @@ frappe.ui.form.on("Unit Sale", {
       let pillClass = "red";
       let pillText = event.type;
       if (event.type === kallat.UNIT_SALE_TYPE.PAYMENT_RECEIPT) {
-        pillClass = "gray";
+        pillClass = "orange";
         pillText = "Payment";
       } else if (event.type == kallat.UNIT_SALE_TYPE.UNIT_SALE_UPDATE) {
         if (event.new_status == kallat.UNIT_SALE_STATUS.BOOKED) {
-          pillClass = "green";
+          pillClass = "blue";
           pillText = "Booking Confirmed";
         } else if (
           event.new_status == kallat.UNIT_SALE_STATUS.AGREEMENT_SIGNED
         ) {
-          pillClass = "lightblue";
+          pillClass = "blue";
           pillText = "Agreement Signed";
+        } else if (event.new_status == kallat.UNIT_SALE_STATUS.HANDED_OVER) {
+          pillClass = "blue"
+          pillText = "Handed Over"
         }
+      } else if (event.type == kallat.UNIT_SALE_TYPE.WORK_STATUS_UPDATE) {
+        pillClass = "gray";
+        pillText = event.new_status;
       }
       return `
       <div class="indicator-pill whitespace-nowrap ${pillClass}">
@@ -294,7 +379,18 @@ frappe.ui.form.on("Unit Sale", {
             misc.final_price
           )}</div>
         `;
+        } else if (event.new_status == kallat.UNIT_SALE_STATUS.HANDED_OVER) {
+          return `
+          <div class="text-muted">Amount Due: ${format_currency(
+            event.amount_due
+          )}</div>
+        `;
         }
+      } else if (event.type == kallat.UNIT_SALE_TYPE.WORK_STATUS_UPDATE) {
+        return `
+        <div class="text-muted">
+          Amount Due: ${format_currency(event.amount_due)}
+        </div>`;
       }
 
       return "";
@@ -308,7 +404,7 @@ frappe.ui.form.on("Unit Sale", {
         <div class="timeline-content p-3" style="background-color: var(--bg-color)">
           <div class="d-flex flex-row">
             ${getEventTypePill(event)}
-            <span class="px-2">${moment(event.creation).format(
+            <span class="px-2 flex-grow-1">${moment(event.creation).format(
               "Do MMM YY"
             )}</span>
             <a class="text-muted" href="/app/unit-sale-event/${event.name}">${
