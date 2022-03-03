@@ -9,6 +9,7 @@ class KallatPlotStatus(Enum):
 
 
 class UnitSaleStatus(Enum):
+    NONE = ""
     BOOKED = "Booked"
     AGREEMENT_SIGNED = "Agreement Signed"
     WIP = "Work In Progress"

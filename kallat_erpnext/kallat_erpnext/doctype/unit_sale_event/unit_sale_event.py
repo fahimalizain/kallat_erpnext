@@ -43,6 +43,7 @@ class UnitSaleEvent(Document):
     unit_sale_doc: "UnitSale"
 
     def validate(self):
+        self.status = ""  # None status
         if not self.date_time:
             self.date_time = now()
 
@@ -72,6 +73,9 @@ class UnitSaleEvent(Document):
 
             if isinstance(handler, dict):
                 handler = handler.get("up") if not for_cancel else handler.get("down")
+            elif for_cancel:
+                # For Cancel. No Down Handler provided
+                return
 
             if not handler:
                 return
