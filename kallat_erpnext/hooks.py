@@ -16,6 +16,20 @@ scheduler_events = {
     ]
 }
 
+fixtures = [
+    {"dt": "Property Setter", "filters": [["name", "IN", [
+        # The following are for Lead-Quick Entry fields (bold fields are included in QuickEntry form)
+        "Lead-main-quick_entry",
+        "Lead-lead_name-allow_in_quick_entry",
+        "Lead-email_id-allow_in_quick_entry",
+        "Lead-source-allow_in_quick_entry",
+        "Lead-campaign_name-allow_in_quick_entry",
+        "Lead-notes-allow_in_quick_entry",
+        "Lead-ends_on-bold",
+        "Lead-contact_date-bold",
+    ]]]}
+]
+
 # Includes in <head>
 # ------------------
 
