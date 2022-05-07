@@ -16,9 +16,12 @@ scheduler_events = {
     ]
 }
 
+write_file = "kallat_erpnext.file.write_file"
+
 fixtures = [
     {"dt": "Property Setter", "filters": [["name", "IN", [
-        # The following are for Lead-Quick Entry fields (bold fields are included in QuickEntry form)
+        # The following are for Lead-Quick Entry fields (bold fields are included
+        # in QuickEntry form)
         "Lead-main-quick_entry",
         "Lead-lead_name-allow_in_quick_entry",
         "Lead-email_id-allow_in_quick_entry",
