@@ -11,19 +11,23 @@ kallat.UNIT_SALE_TYPE = {
 kallat.UNIT_SALE_STATUS = {
   BOOKED: "Booked",
   AGREEMENT_SIGNED: "Agreement Signed",
-  HANDED_OVER: "Handed Over"
+  WIP: "Work In Progress",
+  HANDED_OVER: "Handed Over",
+  COMPLETED: "Completed",
 };
 
-kallat.WORK_STATUSES = [
-  "Not Started",
-  "Foundation Completed",
-  "1st Floor Slab Completed",
-  "Structure Completed",
-  "Tiling Completed",
-  "Hand Over Completed",
-];
+kallat.WORK_STATUS = {
+  NOT_STARTED: "Not Started",
+  FOUNDATION_COMPLETED: "Foundation Completed",
+  FIRST_FLOOR_SLAB_COMPLETED: "1st Floor Slab Completed",
+  STRUCTURE_COMPLETED: "Structure Completed",
+  TILING_COMPLETED: "Tiling Completed",
+  HAND_OVER_COMPLETED: "Hand Over Completed",
+};
 
-kallat.unit_sale_frm_btn_grp = "Update"
+kallat.WORK_STATUSES = Object.values(kallat.WORK_STATUS);
+kallat.UNIT_SALE_FRM_BTN_GRP = "Update";
+
 
 frappe.ui.form.on("Unit Sale", {
   refresh: function (frm) {
@@ -33,10 +37,32 @@ frappe.ui.form.on("Unit Sale", {
     }
 
     $(frm.fields_dict["events_html"].wrapper).html(``);
-    if (frm.doc.docstatus === 1) {
-      // Confirm
-      if (frm.doc.status === "" || !frm.doc.status) {
-        frm.add_custom_button("Confirm Booking", () => {
+
+    if (frm.doc.docstatus !== 1) {
+      return;
+    }
+
+    frm.events.add_custom_buttons(frm);
+
+    // make events_html
+    frm.call({
+      method: "get_events",
+      doc: frm.doc,
+      callback(r) {
+        if (r.exc) {
+          return;
+        }
+        frm.events.make_events_html(frm, r.message);
+      },
+    });
+  },
+
+  add_custom_buttons(frm) {
+    // Confirm
+    if (frm.doc.status === "" || !frm.doc.status) {
+      frm.add_custom_button(
+        "Confirm Booking",
+        () => {
           frappe.confirm("Are you sure to confirm the Booking ?", () => {
             frm.call({
               method: "confirm_booking",
@@ -53,51 +79,67 @@ frappe.ui.form.on("Unit Sale", {
               },
             });
           });
-        }, kallat.unit_sale_frm_btn_grp);
-      }
-      // Sign Agreement
-      else if (frm.doc.status === "Booked") {
-        frm.add_custom_button("Sign Agreement", () => {
-          frm.events.show_agreement_form(frm);
-        }, kallat.unit_sale_frm_btn_grp);
-      }
-      // Work Progress Updates
-      else if (
-        frm.doc.status == "Work In Progress" &&
-        frm.doc.work_status != "Tiling Completed"
-      ) {
-        frm.add_custom_button("Work Progress", () => {
-          frm.events.show_work_progress_form(frm);
-        }, kallat.unit_sale_frm_btn_grp);
-      }
-      // Handover
-      else if (
-        frm.doc.work_status == "Tiling Completed" &&
-        frm.doc.status == "Work In Progress"
-      ) {
-        frm.add_custom_button("Hand Over Unit", () => {
-          frm.events.show_hand_over_form(frm);
-        }, kallat.unit_sale_frm_btn_grp);
-      }
-
-      // Payment Receipt
-      if (frm.doc.total_balance > 0) {
-        frm.add_custom_button("Make Payment Receipt", () => {
-          frm.events.show_payment_receipt_form(frm);
-        }, kallat.unit_sale_frm_btn_grp);
-      }
-
-      // make events_html
-      frm.call({
-        method: "get_events",
-        doc: frm.doc,
-        callback(r) {
-          if (r.exc) {
-            return;
-          }
-          frm.events.make_events_html(frm, r.message);
         },
-      });
+        kallat.UNIT_SALE_FRM_BTN_GRP
+      );
+    }
+    // Sign Agreement
+    else if (frm.doc.status === kallat.UNIT_SALE_STATUS.BOOKED) {
+      frm.add_custom_button(
+        "Sign Agreement",
+        () => {
+          frm.events.show_agreement_form(frm);
+        },
+        kallat.UNIT_SALE_FRM_BTN_GRP
+      );
+    }
+    // Work Progress Updates
+    else if (
+      frm.doc.status == kallat.UNIT_SALE_STATUS.WIP &&
+      frm.doc.work_status != kallat.WORK_STATUS.TILING_COMPLETED
+    ) {
+      frm.add_custom_button(
+        "Work Progress",
+        () => {
+          frm.events.show_work_progress_form(frm);
+        },
+        kallat.UNIT_SALE_FRM_BTN_GRP
+      );
+    }
+    // Handover
+    else if (
+      frm.doc.work_status == kallat.WORK_STATUS.TILING_COMPLETED &&
+      frm.doc.status == kallat.UNIT_SALE_STATUS.WIP
+    ) {
+      frm.add_custom_button(
+        "Hand Over Unit",
+        () => {
+          frm.events.show_hand_over_form(frm);
+        },
+        kallat.UNIT_SALE_FRM_BTN_GRP
+      );
+    }
+
+    // Payment Receipt
+    if (frm.doc.total_balance > 0) {
+      frm.add_custom_button(
+        "Make Payment Receipt",
+        () => {
+          frm.events.show_payment_receipt_form(frm);
+        },
+        kallat.UNIT_SALE_FRM_BTN_GRP
+      );
+    }
+
+    // Extra Work
+    if (frm.doc.status !== kallat.UNIT_SALE_STATUS.COMPLETED) {
+      frm.add_custom_button(
+        "Add Extra Work",
+        () => {
+          frm.events.show_extra_work_form(frm);
+        },
+        kallat.UNIT_SALE_FRM_BTN_GRP
+      );
     }
   },
 
@@ -335,6 +377,30 @@ frappe.ui.form.on("Unit Sale", {
     d.show();
   },
 
+  show_extra_work_form(frm) {
+    const d = new frappe.ui.Dialog({
+      title: "Add Extra Work",
+      fields: [
+        {
+          label: "Remarks",
+          fieldtype: "Small Text",
+          fieldname: "remarks",
+        },
+        {
+          label: "Extra Works",
+          fieldtype: "Table",
+          fieldname: "extra_work",
+          fields: frappe.get_meta("Extra Work Item").fields
+        },
+      ],
+      primary_action_label: "Add",
+      primary_action(values) {
+        console.log(values)
+      }
+    });
+    d.show();
+  },
+
   make_events_html(frm, events) {
     const getEventTypePill = (event) => {
       let pillClass = "red";
@@ -352,8 +418,8 @@ frappe.ui.form.on("Unit Sale", {
           pillClass = "blue";
           pillText = "Agreement Signed";
         } else if (event.new_status == kallat.UNIT_SALE_STATUS.HANDED_OVER) {
-          pillClass = "blue"
-          pillText = "Handed Over"
+          pillClass = "blue";
+          pillText = "Handed Over";
         }
       } else if (event.type == kallat.UNIT_SALE_TYPE.WORK_STATUS_UPDATE) {
         pillClass = "gray";
@@ -415,8 +481,8 @@ frappe.ui.form.on("Unit Sale", {
                 "Do MMM YY"
               )}</span>
               <a class="text-muted" href="/app/unit-sale-event/${event.name}">${
-                event.name
-              }</a>
+        event.name
+      }</a>
             </div>
           </div>
         </div>
