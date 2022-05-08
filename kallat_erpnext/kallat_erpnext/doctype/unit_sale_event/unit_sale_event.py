@@ -34,6 +34,9 @@ EVENT_HANDLERS = frappe._dict({
         up=on_work_status_update_up, down=on_work_status_update_down),
     UnitSaleEventType.PAYMENT_RECEIPT: dict(
         up=on_payment_receipt_up, down=on_payment_receipt_down,
+    ),
+    UnitSaleEventType.ADD_EXTRA_WORK: dict(
+        up=None, down=None,
     )
 })
 

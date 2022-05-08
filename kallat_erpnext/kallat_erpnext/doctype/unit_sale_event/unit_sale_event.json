@@ -17,7 +17,9 @@
   "amount_due",
   "late_fee_amount",
   "amended_from",
-  "misc"
+  "misc",
+  "section_break_13",
+  "extra_work"
  ],
  "fields": [
   {
@@ -34,7 +36,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Type",
-   "options": "Unit Sale Update\nWork Status Update\nPayment Receipt\nLate Fee Applied",
+   "options": "Unit Sale Update\nWork Status Update\nPayment Receipt\nLate Fee Applied\nAdd Extra Work",
    "reqd": 1
   },
   {
@@ -92,12 +94,23 @@
    "fieldtype": "Data",
    "label": "Old Status",
    "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.type == \"Add Extra Work\"",
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "extra_work",
+   "fieldtype": "Table",
+   "label": "Extra Work",
+   "options": "Extra Work Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-04-05 17:03:13.962580",
+ "modified": "2022-05-08 14:53:53.881835",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale Event",
