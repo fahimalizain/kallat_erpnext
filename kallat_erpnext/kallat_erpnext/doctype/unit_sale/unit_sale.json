@@ -18,6 +18,8 @@
   "unit_type",
   "work_status",
   "amended_from",
+  "section_break_09",
+  "extra_work",
   "section_break_12",
   "events_html",
   "section_break_13",
@@ -162,12 +164,22 @@
    "fieldtype": "Currency",
    "label": "Total Balance",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_09",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "extra_work",
+   "fieldtype": "Table",
+   "label": "Extra Work",
+   "options": "Extra Work Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-04-05 17:03:34.248539",
+ "modified": "2022-05-08 14:44:10.888162",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",

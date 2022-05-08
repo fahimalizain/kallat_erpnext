@@ -30,3 +30,4 @@ class UnitSaleEventType(Enum):
     WORK_STATUS_UPDATE = "Work Status Update"
     PAYMENT_RECEIPT = "Payment Receipt"
     LATE_FEE_APPLIED = "Late Fee Applied"
+    ADD_EXTRA_WORK = "Add Extra Work"
