@@ -23,6 +23,8 @@ kallat.WORK_STATUSES = [
   "Hand Over Completed",
 ];
 
+kallat.unit_sale_frm_btn_grp = "Update"
+
 frappe.ui.form.on("Unit Sale", {
   refresh: function (frm) {
     if (!frm.doc.date_time) {
@@ -51,22 +53,22 @@ frappe.ui.form.on("Unit Sale", {
               },
             });
           });
-        });
+        }, kallat.unit_sale_frm_btn_grp);
       }
       // Sign Agreement
       else if (frm.doc.status === "Booked") {
         frm.add_custom_button("Sign Agreement", () => {
           frm.events.show_agreement_form(frm);
-        });
+        }, kallat.unit_sale_frm_btn_grp);
       }
       // Work Progress Updates
       else if (
         frm.doc.status == "Work In Progress" &&
         frm.doc.work_status != "Tiling Completed"
       ) {
-        frm.add_custom_button("Update Work Progress", () => {
+        frm.add_custom_button("Work Progress", () => {
           frm.events.show_work_progress_form(frm);
-        });
+        }, kallat.unit_sale_frm_btn_grp);
       }
       // Handover
       else if (
@@ -75,14 +77,14 @@ frappe.ui.form.on("Unit Sale", {
       ) {
         frm.add_custom_button("Hand Over Unit", () => {
           frm.events.show_hand_over_form(frm);
-        });
+        }, kallat.unit_sale_frm_btn_grp);
       }
 
       // Payment Receipt
       if (frm.doc.total_balance > 0) {
         frm.add_custom_button("Make Payment Receipt", () => {
           frm.events.show_payment_receipt_form(frm);
-        });
+        }, kallat.unit_sale_frm_btn_grp);
       }
 
       // make events_html
