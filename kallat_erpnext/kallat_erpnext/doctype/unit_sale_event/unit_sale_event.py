@@ -19,7 +19,9 @@ from .handlers import (
     on_signing_agreement,
     on_handing_over,
     on_work_status_update_up,
-    on_work_status_update_down)
+    on_work_status_update_down,
+    on_extra_work_up,
+    on_extra_work_down)
 
 if TYPE_CHECKING:
     from kallat_erpnext.kallat_erpnext.doctype.unit_sale.unit_sale import UnitSale
@@ -36,7 +38,7 @@ EVENT_HANDLERS = frappe._dict({
         up=on_payment_receipt_up, down=on_payment_receipt_down,
     ),
     UnitSaleEventType.ADD_EXTRA_WORK: dict(
-        up=None, down=None,
+        up=on_extra_work_up, down=on_extra_work_down,
     )
 })
 
@@ -71,7 +73,8 @@ class UnitSaleEvent(Document):
                 sub_type = UnitSaleStatus(self.new_status)
                 handler = EVENT_HANDLERS[event_type].get(sub_type)
             elif event_type in (UnitSaleEventType.WORK_STATUS_UPDATE,
-                                UnitSaleEventType.PAYMENT_RECEIPT):
+                                UnitSaleEventType.PAYMENT_RECEIPT,
+                                UnitSaleEventType.ADD_EXTRA_WORK):
                 handler = EVENT_HANDLERS[event_type]
 
             if isinstance(handler, dict):

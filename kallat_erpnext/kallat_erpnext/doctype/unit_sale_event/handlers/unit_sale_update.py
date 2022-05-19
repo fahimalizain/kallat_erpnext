@@ -33,13 +33,13 @@ def on_booking(event_doc: "UnitSaleEvent"):
 
 def on_signing_agreement(event_doc: "UnitSaleEvent"):
     info = frappe.parse_json(event_doc.misc)
-    info.final_price = flt(info.final_price, precision=2)
+    info.agreement_price = flt(info.agreement_price, precision=2)
 
     unit_sale = event_doc.unit_sale_doc
     event_doc.old_status = unit_sale.status
     unit_sale.update(dict(
         status=UnitSaleStatus.WIP.value,
-        final_price=info.final_price,
+        agreement_price=info.agreement_price,
         agreement_file=info.agreement_file
     ))
 

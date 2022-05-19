@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 from .payment_receipt import on_payment_receipt_down, on_payment_receipt_up  # noqa
 from .work_status_update import on_work_status_update_down, on_work_status_update_up  # noqa
 from .unit_sale_update import on_booking, on_handing_over, on_signing_agreement  # noqa
-
+from .extra_work import on_extra_work_up, on_extra_work_down  # noqa
 
 PAYMENT_SCHEDULE = OrderedDict()
 PAYMENT_SCHEDULE[UnitSaleStatus.BOOKED] = frappe._dict(
@@ -60,7 +60,7 @@ def make_due(event_doc: "UnitSaleEvent"):
         if schedule.type == "Fixed":
             amt = schedule.amount
         elif schedule.type == "Percent":
-            amt = flt(unit_sale.final_price * schedule.percent / 100, precision=2)
+            amt = flt(unit_sale.total_price * schedule.percent / 100, precision=2)
 
         if schedule.including_existing_due:
             amt = amt - existing_due

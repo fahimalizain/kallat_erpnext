@@ -11,7 +11,7 @@
   "status",
   "agreement_file",
   "suggested_price",
-  "final_price",
+  "agreement_price",
   "column_break_3",
   "project",
   "plot",
@@ -20,9 +20,11 @@
   "amended_from",
   "section_break_09",
   "extra_work",
+  "total_extra_work",
   "section_break_12",
   "events_html",
   "section_break_13",
+  "total",
   "total_due",
   "total_received",
   "balance_due",
@@ -114,7 +116,7 @@
    "reqd": 1
   },
   {
-   "depends_on": "eval:!doc.final_price",
+   "depends_on": "eval:!doc.agreement_price",
    "fieldname": "suggested_price",
    "fieldtype": "Currency",
    "label": "Suggested Price",
@@ -142,9 +144,9 @@
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "final_price",
+   "fieldname": "agreement_price",
    "fieldtype": "Currency",
-   "label": "Final Price",
+   "label": "Agreement Price",
    "read_only": 1
   },
   {
@@ -174,12 +176,25 @@
    "fieldtype": "Table",
    "label": "Extra Work",
    "options": "Extra Work Item"
+  },
+  {
+   "fieldname": "total_extra_work",
+   "fieldtype": "Currency",
+   "label": "Total Extra Work",
+   "read_only": 1
+  },
+  {
+   "description": "Agreement Price + Additional Work Charges, if any",
+   "fieldname": "total",
+   "fieldtype": "Currency",
+   "label": "Total Price",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-05-08 14:44:10.888162",
+ "modified": "2022-05-19 20:15:11.929605",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",

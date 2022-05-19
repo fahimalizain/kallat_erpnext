@@ -1,7 +1,7 @@
 # Copyright (c) 2022, Fahim Ali Zain and contributors
 # For license information, please see license.txt
 
-
+from typing import List
 import frappe
 
 # import frappe
@@ -11,6 +11,11 @@ from kallat_erpnext.kallat_erpnext import UnitSaleEventType, UnitSaleStatus, Uni
 
 
 class UnitSale(Document):
+
+    extra_work: List[dict]
+    total_extra_work: float
+    agreement_price: float
+    total_price: float
 
     def validate(self):
         self.suggested_price = 0
@@ -45,12 +50,19 @@ class UnitSale(Document):
             "Unit Sale Event", {
                 "unit_sale": self.name, "docstatus": 1}, [
                 "amount_received", "amount_due"])
+
+        self.total_extra_work = flt(sum(x.amount for x in self.extra_work), precision=2)
+        self.total_price = flt(
+            (self.agreement_price or self.suggested_price) +
+            self.total_extra_work,
+            precision=2)
+
         self.total_due = flt(sum(x.amount_due for x in events), precision=2)
         self.total_received = flt(sum(x.amount_received for x in events), precision=2)
         self.balance_due = max(0, flt(self.total_due - self.total_received))
 
-        self.total_balance = flt((self.final_price or self.suggested_price) + flt(self.total_fine)
-                                 - self.total_received, precision=2)
+        self.total_balance = flt(self.total_price +
+                                 flt(self.total_fine) - self.total_received, precision=2)
 
     @frappe.whitelist()
     def get_events(self):
@@ -83,7 +95,7 @@ class UnitSale(Document):
         self.reload()
 
     @frappe.whitelist()
-    def sign_agreement(self, agreement_file, final_price, remarks=None):
+    def sign_agreement(self, agreement_file, agreement_price, remarks=None):
         frappe.get_doc(dict(
             doctype="Unit Sale Event",
             type=UnitSaleEventType.UNIT_SALE_UPDATE.value,
@@ -93,7 +105,7 @@ class UnitSale(Document):
             docstatus=1,
             misc=frappe.as_json(dict(
                 agreement_file=agreement_file,
-                final_price=flt(final_price, precision=2)
+                agreement_price=flt(agreement_price, precision=2)
             ))
         )).insert(ignore_permissions=True)
 
@@ -120,6 +132,27 @@ class UnitSale(Document):
             docstatus=1,
         )).insert(ignore_permissions=True)
         self.link_event_files(event_doc, kwargs)
+
+    @frappe.whitelist()
+    def add_extra_work(self, args: dict):
+        remarks = args.get("remarks")
+        extra_work = args.get("extra_work")
+
+        frappe.get_doc(dict(
+            doctype="Unit Sale Event",
+            type=UnitSaleEventType.ADD_EXTRA_WORK.value,
+            extra_work=[
+                dict(
+                    title=x.get("title"),
+                    qty=x.get("qty"),
+                    rate=x.get("rate"),
+                    description=x.get("description"))
+                for x in extra_work
+            ],
+            unit_sale=self.name,
+            remarks=remarks,
+            docstatus=1,
+        )).insert(ignore_permissions=True)
 
     def link_event_files(self, event_doc, files):
         if not files or "num_files" not in files:

@@ -28,7 +28,6 @@ kallat.WORK_STATUS = {
 kallat.WORK_STATUSES = Object.values(kallat.WORK_STATUS);
 kallat.UNIT_SALE_FRM_BTN_GRP = "Update";
 
-
 frappe.ui.form.on("Unit Sale", {
   refresh: function (frm) {
     if (!frm.doc.date_time) {
@@ -154,10 +153,10 @@ frappe.ui.form.on("Unit Sale", {
           fieldname: "agreement_file",
         },
         {
-          label: "Final Price",
+          label: "Agreement Price",
           fieldtype: "Currency",
           reqd: 1,
-          fieldname: "final_price",
+          fieldname: "agreement_price",
           default: frm.doc.suggested_price,
         },
         {
@@ -378,6 +377,11 @@ frappe.ui.form.on("Unit Sale", {
   },
 
   show_extra_work_form(frm) {
+    // Clone fields
+    const extra_work_fields = JSON.parse(
+      JSON.stringify(frappe.get_meta("Extra Work Item").fields)
+    );
+
     const d = new frappe.ui.Dialog({
       title: "Add Extra Work",
       fields: [
@@ -390,14 +394,40 @@ frappe.ui.form.on("Unit Sale", {
           label: "Extra Works",
           fieldtype: "Table",
           fieldname: "extra_work",
-          fields: frappe.get_meta("Extra Work Item").fields
+          fields: extra_work_fields,
+        },
+        {
+          label: "Total Additional Cost",
+          fieldtype: "Currency",
+          fieldname: "total",
+          read_only: 1,
+          default: 0,
         },
       ],
       primary_action_label: "Add",
       primary_action(values) {
-        console.log(values)
-      }
+        console.log(values);
+      },
     });
+
+    const update_amounts = () => {
+      // This function will update the amount & total on the dialog
+      let total = 0;
+      const grid = d.fields_dict["extra_work"].grid;
+      for (const row of grid.data) {
+        row.amount = flt(row.qty * row.rate, 2) || 0;
+        total += row.amount;
+      }
+      d.set_value("total", total);
+      grid.refresh();
+    };
+
+    // Attach update_amount handler
+    for (const df of ["qty", "rate"]) {
+      extra_work_fields.find((x) => x.fieldname == df).onchange = () =>
+        update_amounts();
+    }
+
     d.show();
   },
 
@@ -444,7 +474,7 @@ frappe.ui.form.on("Unit Sale", {
           const misc = JSON.parse(event.misc);
           return `
           <div class="text-muted">Final Price: ${format_currency(
-            misc.final_price
+            misc.agreement_price
           )}</div>
         `;
         } else if (event.new_status == kallat.UNIT_SALE_STATUS.HANDED_OVER) {
