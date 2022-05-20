@@ -11,7 +11,6 @@
   "status",
   "agreement_file",
   "suggested_price",
-  "agreement_price",
   "column_break_3",
   "project",
   "plot",
@@ -20,17 +19,20 @@
   "amended_from",
   "section_break_09",
   "extra_work",
-  "total_extra_work",
   "section_break_12",
   "events_html",
   "section_break_13",
+  "agreement_price",
+  "total_extra_work",
+  "total_fine",
+  "column_break_12",
   "total_price",
+  "section_break_26",
   "total_percent_due",
   "total_due",
   "total_received",
+  "column_break_26",
   "balance_due",
-  "column_break_12",
-  "total_fine",
   "total_balance"
  ],
  "fields": [
@@ -185,7 +187,7 @@
    "read_only": 1
   },
   {
-   "description": "Agreement Price + Additional Work Charges, if any",
+   "description": "Agreement Price + Additional Work Charges + Fines",
    "fieldname": "total_price",
    "fieldtype": "Currency",
    "label": "Total Price",
@@ -194,14 +196,22 @@
   {
    "fieldname": "total_percent_due",
    "fieldtype": "Percent",
-   "label": "Total % Due",
+   "label": "% Due",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_26",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_26",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-05-20 19:54:30.600613",
+ "modified": "2022-05-20 21:36:46.503659",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",
