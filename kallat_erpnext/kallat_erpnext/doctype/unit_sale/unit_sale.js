@@ -72,9 +72,7 @@ frappe.ui.form.on("Unit Sale", {
                   return;
                 }
                 frappe.msgprint("Booking Confirmed!");
-                setTimeout(() => {
-                  location.reload();
-                }, 2000);
+                frm.reload_doc();
               },
             });
           });
@@ -183,9 +181,7 @@ frappe.ui.form.on("Unit Sale", {
               );
             } else {
               frappe.msgprint("Status Updated!");
-              setTimeout(() => {
-                location.reload();
-              }, 2000);
+              frm.reload_doc();
               d.hide();
             }
           },
@@ -231,9 +227,7 @@ frappe.ui.form.on("Unit Sale", {
               );
             } else {
               frappe.msgprint("Payment Receipt Made!");
-              setTimeout(() => {
-                location.reload();
-              }, 2000);
+              frm.reload_doc();
               d.hide();
             }
           },
@@ -299,9 +293,7 @@ frappe.ui.form.on("Unit Sale", {
               );
             } else {
               frappe.msgprint("Status Updated!");
-              setTimeout(() => {
-                location.reload();
-              }, 2000);
+              frm.reload_doc();
               d.hide();
             }
           },
@@ -363,9 +355,7 @@ frappe.ui.form.on("Unit Sale", {
               );
             } else {
               frappe.msgprint("Hand Over Done!");
-              setTimeout(() => {
-                location.reload();
-              }, 2000);
+              frm.reload_doc();
               d.hide();
             }
           },
@@ -473,8 +463,8 @@ frappe.ui.form.on("Unit Sale", {
         if (event.new_status == kallat.UNIT_SALE_STATUS.AGREEMENT_SIGNED) {
           const misc = JSON.parse(event.misc);
           return `
-          <div class="text-muted">Final Price: ${format_currency(
-            misc.agreement_price
+          <div class="text-muted">Agreement Price: ${format_currency(
+            misc.agreement_price || misc.final_price // TODO: remove, here for backward compatibility
           )}</div>
         `;
         } else if (event.new_status == kallat.UNIT_SALE_STATUS.HANDED_OVER) {
@@ -495,7 +485,7 @@ frappe.ui.form.on("Unit Sale", {
     };
 
     const timelineItems = [];
-    for (const event of events) {
+    for (const event of (events || [])) {
       timelineItems.push(`
       <div class="timeline-item mb-2">
         <div class="timeline-dot"></div>
@@ -508,11 +498,10 @@ frappe.ui.form.on("Unit Sale", {
 
             <div class="flex-column">
               <span class="px-2 flex-grow-1">${moment(event.creation).format(
-                "Do MMM YY"
-              )}</span>
-              <a class="text-muted" href="/app/unit-sale-event/${event.name}">${
-        event.name
-      }</a>
+        "Do MMM YY"
+      )}</span>
+              <a class="text-muted" href="/app/unit-sale-event/${event.name}">${event.name
+        }</a>
             </div>
           </div>
         </div>

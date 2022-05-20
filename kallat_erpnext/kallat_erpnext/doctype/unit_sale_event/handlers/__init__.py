@@ -86,6 +86,7 @@ def make_due(event_doc: "UnitSaleEvent"):
 
     amount = flt(amount, precision=2)
     event_doc.amount_due = amount
+    event_doc.percent_due = schedule.percent or 0
 
     if schedule.upfront:
         total_due = unit_sale.total_due + amount

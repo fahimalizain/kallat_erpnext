@@ -24,7 +24,8 @@
   "section_break_12",
   "events_html",
   "section_break_13",
-  "total",
+  "total_price",
+  "total_percent_due",
   "total_due",
   "total_received",
   "balance_due",
@@ -185,16 +186,22 @@
   },
   {
    "description": "Agreement Price + Additional Work Charges, if any",
-   "fieldname": "total",
+   "fieldname": "total_price",
    "fieldtype": "Currency",
    "label": "Total Price",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_percent_due",
+   "fieldtype": "Percent",
+   "label": "Total % Due",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-05-19 20:15:11.929605",
+ "modified": "2022-05-20 19:54:30.600613",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",

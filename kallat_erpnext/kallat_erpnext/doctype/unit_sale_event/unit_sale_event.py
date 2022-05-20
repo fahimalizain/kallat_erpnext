@@ -46,6 +46,8 @@ EVENT_HANDLERS = frappe._dict({
 class UnitSaleEvent(Document):
 
     unit_sale_doc: "UnitSale"
+    amount_due: float
+    percent_due: float
 
     def validate(self):
         self.status = ""  # None status

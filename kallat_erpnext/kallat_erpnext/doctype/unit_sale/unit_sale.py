@@ -16,6 +16,7 @@ class UnitSale(Document):
     total_extra_work: float
     agreement_price: float
     total_price: float
+    total_percent_due: float
 
     def validate(self):
         self.suggested_price = 0
@@ -49,7 +50,7 @@ class UnitSale(Document):
         events = frappe.get_all(
             "Unit Sale Event", {
                 "unit_sale": self.name, "docstatus": 1}, [
-                "amount_received", "amount_due"])
+                "amount_received", "amount_due", "percent_due"])
 
         self.total_extra_work = flt(sum(x.amount for x in self.extra_work), precision=2)
         self.total_price = flt(
@@ -57,6 +58,7 @@ class UnitSale(Document):
             self.total_extra_work,
             precision=2)
 
+        self.total_percent_due = flt(sum(x.percent_due for x in events), precision=2)
         self.total_due = flt(sum(x.amount_due for x in events), precision=2)
         self.total_received = flt(sum(x.amount_received for x in events), precision=2)
         self.balance_due = max(0, flt(self.total_due - self.total_received))
@@ -68,7 +70,7 @@ class UnitSale(Document):
     def get_events(self):
         return frappe.get_all("Unit Sale Event", {
             "docstatus": 1, "unit_sale": self.name,
-        }, ["*"], order_by="creation asc")
+        }, ["*"], order_by="creation asc") or []
 
     @frappe.whitelist()
     def make_payment_receipt(self, amount_received, remarks=None):
