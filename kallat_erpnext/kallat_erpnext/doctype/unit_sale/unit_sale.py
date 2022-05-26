@@ -55,7 +55,7 @@ class UnitSale(Document):
         self.total_extra_work = flt(sum(x.amount for x in self.extra_work), precision=2)
         self.total_price = flt(
             (self.agreement_price or self.suggested_price) +
-            self.total_extra_work,
+            self.total_extra_work + flt(self.total_fine),
             precision=2)
 
         self.total_percent_due = flt(sum(x.percent_due for x in events), precision=2)
@@ -63,8 +63,7 @@ class UnitSale(Document):
         self.total_received = flt(sum(x.amount_received for x in events), precision=2)
         self.balance_due = max(0, flt(self.total_due - self.total_received))
 
-        self.total_balance = flt(self.total_price +
-                                 flt(self.total_fine) - self.total_received, precision=2)
+        self.total_balance = flt(self.total_price - self.total_received, precision=2)
 
     @frappe.whitelist()
     def get_events(self):

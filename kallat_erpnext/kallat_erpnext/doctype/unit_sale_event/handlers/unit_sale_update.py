@@ -42,6 +42,7 @@ def on_signing_agreement(event_doc: "UnitSaleEvent"):
         agreement_price=info.agreement_price,
         agreement_file=info.agreement_file
     ))
+    unit_sale.update_due_and_received()
 
     from . import make_due
     make_due(event_doc)
