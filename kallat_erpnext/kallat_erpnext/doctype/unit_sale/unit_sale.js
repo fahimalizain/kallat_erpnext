@@ -396,7 +396,26 @@ frappe.ui.form.on("Unit Sale", {
       ],
       primary_action_label: "Add",
       primary_action(values) {
-        console.log(values);
+        frm.call({
+          method: "add_extra_work",
+          doc: frm.doc,
+          freeze: true,
+          args: {
+            remarks: values.remarks,
+            extra_work: values.extra_work,
+          },
+          callback(r) {
+            if (r.exc) {
+              frappe.msgprint(
+                "Something went wrong! Please try again or Contact Developer"
+              );
+            } else {
+              frappe.msgprint("Extra Work Registered!");
+              frm.reload_doc();
+              d.hide();
+            }
+          },
+        });
       },
     });
 
