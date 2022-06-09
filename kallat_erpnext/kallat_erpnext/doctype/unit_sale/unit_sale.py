@@ -19,11 +19,9 @@ class UnitSale(Document):
     total_percent_due: float
 
     def validate(self):
-        self.suggested_price = 0
         self.validate_plot()
         self.validate_unit_type()
-
-        self.suggested_price = flt(self.suggested_price, precision=2)
+        self.calculate_suggested_price()
 
     def before_update_after_submit(self):
         self.update_due_and_received()
@@ -37,14 +35,24 @@ class UnitSale(Document):
         if plot.project != self.project:
             frappe.throw(f"Plot {plot.title} do not belong to project {self.project}")
 
-        self.suggested_price += flt(plot.price)
-
     def validate_unit_type(self):
         unit_type = frappe.get_doc("Kallat Unit Type", self.unit_type)
         if unit_type.project != self.project:
             frappe.throw(f"UnitType {unit_type.title} do not belong to project {self.project}")
 
-        self.suggested_price += flt(unit_type.price)
+    def calculate_suggested_price(self):
+        """
+        Suggested Price is calculated only when it is empty
+        """
+        self.suggested_price = flt(self.suggested_price, 2)
+        if self.suggested_price > 0:
+            # Entered manually by User or already exists
+            return
+
+        plot_price = frappe.db.get_value("Kallat Plot", self.plot, "price")
+        unit_type_price = frappe.db.get_value("Kallat Unit Type", self.unit_type, "price")
+        self.suggested_price = flt(
+            flt(plot_price) + flt(unit_type_price), 2)
 
     def update_due_and_received(self):
         events = frappe.get_all(
