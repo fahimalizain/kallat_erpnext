@@ -193,6 +193,9 @@ frappe.ui.form.on("Unit Sale", {
   },
 
   show_payment_receipt_form(frm) {
+
+    let fileIdx = 0;
+
     const d = new frappe.ui.Dialog({
       title: "Payment Receipt",
       fields: [
@@ -208,6 +211,22 @@ frappe.ui.form.on("Unit Sale", {
           fieldtype: "Small Text",
           fieldname: "remarks",
         },
+        {
+          label: "Add File",
+          fieldtype: "Button",
+          click: () => {
+            fileIdx++;
+
+            const fieldName = "file_" + fileIdx;
+            d.make_field({
+              label: "File-" + fileIdx,
+              fieldname: fieldName,
+              fieldtype: "Attach",
+              reqd: 1,
+            });
+            d.fields_dict[fieldName].refresh();
+          },
+        },
       ],
       primary_action_label: "Make Receipt",
       primary_action(values) {
@@ -218,7 +237,9 @@ frappe.ui.form.on("Unit Sale", {
         frm.call({
           method: "make_payment_receipt",
           doc: frm.doc,
-          args: values,
+          args: {
+            ...values, num_files: fileIdx
+          },
           freeze: true,
           callback(r) {
             if (r.exc) {

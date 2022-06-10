@@ -80,8 +80,8 @@ class UnitSale(Document):
         }, ["*"], order_by="creation asc") or []
 
     @frappe.whitelist()
-    def make_payment_receipt(self, amount_received, remarks=None):
-        frappe.get_doc(dict(
+    def make_payment_receipt(self, amount_received, remarks=None, **kwargs):
+        event_doc = frappe.get_doc(dict(
             doctype="Unit Sale Event",
             type=UnitSaleEventType.PAYMENT_RECEIPT.value,
             unit_sale=self.name,
@@ -90,6 +90,7 @@ class UnitSale(Document):
             docstatus=1
         )).insert(ignore_permissions=True)
         self.reload()
+        self.link_event_files(event_doc, kwargs)
 
     @frappe.whitelist()
     def confirm_booking(self):
