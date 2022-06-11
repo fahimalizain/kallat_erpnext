@@ -16,6 +16,7 @@ scheduler_events = {
     ]
 }
 
+boot_session = "kallat_erpnext.boot.boot_session"
 write_file = "kallat_erpnext.file.write_file"
 
 fixtures = [
@@ -38,7 +39,7 @@ fixtures = [
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/kallat_erpnext/css/kallat_erpnext.css"
-# app_include_js = "/assets/kallat_erpnext/js/kallat_erpnext.js"
+app_include_js = ["/assets/kallat_erpnext/js/utils.js"]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/kallat_erpnext/css/kallat_erpnext.css"

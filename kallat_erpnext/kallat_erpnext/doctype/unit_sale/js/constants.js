@@ -23,4 +23,4 @@ kallat.unit_sale.WORK_STATUS = {
     HAND_OVER_COMPLETED: "Hand Over Completed",
 };
 
-kallat.unit_saleWORK_STATUSES = Object.values(kallat.unit_sale.WORK_STATUS);
+kallat.unit_sale.WORK_STATUSES = Object.values(kallat.unit_sale.WORK_STATUS);

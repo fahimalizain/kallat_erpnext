@@ -15,7 +15,8 @@ kallat.unit_sale.render_events = function (frm) {
             if (r.exc) {
                 return;
             }
-            if (!r.message.length) {
+            const events = r.message || [];
+            if (!events.length) {
                 return
             }
             kallat.unit_sale.make_events_html(frm, r.message);
