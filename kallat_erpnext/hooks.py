@@ -55,7 +55,15 @@ fixtures = [
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Unit Sale": [
+    "kallat_erpnext/doctype/unit_sale/js/constants.js",
+    "kallat_erpnext/doctype/unit_sale/js/form_agreement.js",
+    "kallat_erpnext/doctype/unit_sale/js/form_extra_work.js",
+    "kallat_erpnext/doctype/unit_sale/js/form_hand_over.js",
+    "kallat_erpnext/doctype/unit_sale/js/form_payment_receipt.js",
+    "kallat_erpnext/doctype/unit_sale/js/form_work_progress.js",
+    "kallat_erpnext/doctype/unit_sale/js/render_events.js"
+]}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
