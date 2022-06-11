@@ -19,7 +19,7 @@
   "amended_from",
   "section_break_09",
   "extra_work",
-  "section_break_12",
+  "events_html_sb",
   "events_html",
   "section_break_13",
   "agreement_price",
@@ -133,10 +133,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "section_break_12",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "events_html",
    "fieldtype": "HTML",
    "label": "Events HTML"
@@ -205,12 +201,16 @@
   {
    "fieldname": "column_break_26",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "events_html_sb",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-06-10 10:28:27.209686",
+ "modified": "2022-06-11 19:08:16.890770",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",

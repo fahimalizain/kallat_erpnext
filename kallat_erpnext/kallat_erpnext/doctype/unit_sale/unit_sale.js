@@ -12,25 +12,13 @@ frappe.ui.form.on("Unit Sale", {
       frm.set_value("date_time", frappe.datetime.now_datetime());
     }
 
-    $(frm.fields_dict["events_html"].wrapper).html(``);
+    kallat.unit_sale.render_events(frm);
 
     if (frm.doc.docstatus !== 1) {
       return;
     }
 
     frm.events.add_custom_buttons(frm);
-
-    // make events_html
-    frm.call({
-      method: "get_events",
-      doc: frm.doc,
-      callback(r) {
-        if (r.exc) {
-          return;
-        }
-        kallat.unit_sale.make_events_html(frm, r.message);
-      },
-    });
   },
 
   add_custom_buttons(frm) {

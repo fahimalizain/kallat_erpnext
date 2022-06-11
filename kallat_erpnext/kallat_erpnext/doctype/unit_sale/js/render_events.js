@@ -1,5 +1,28 @@
 frappe.provide("kallat.unit_sale")
 
+kallat.unit_sale.render_events = function (frm) {
+    $(frm.fields_dict["events_html"].wrapper).html(``);
+    frm.set_df_property("events_html_sb", "hidden", 1)
+
+    if (frm.doc.docstatus !== 1) {
+        return;
+    }
+
+    frm.call({
+        method: "get_events",
+        doc: frm.doc,
+        callback(r) {
+            if (r.exc) {
+                return;
+            }
+            if (!r.message.length) {
+                return
+            }
+            kallat.unit_sale.make_events_html(frm, r.message);
+            frm.set_df_property("events_html_sb", "hidden", 0)
+        },
+    });
+}
 
 kallat.unit_sale.make_events_html = function (frm, events) {
     const getEventTypePill = (event) => {
@@ -88,6 +111,7 @@ kallat.unit_sale.make_events_html = function (frm, events) {
       </div>
       `);
     }
+
     $(frm.fields_dict["events_html"].wrapper).html(`
     <div class="new-timeline">
       <h4 style="position: relative; top: -0.5em; left: -1.5em;">Events</h4>
