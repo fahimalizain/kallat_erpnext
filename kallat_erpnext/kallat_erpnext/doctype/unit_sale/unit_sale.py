@@ -87,8 +87,10 @@ class UnitSale(Document):
             unit_sale=self.name,
             remarks=remarks,
             amount_received=amount_received,
-            docstatus=1
-        )).insert(ignore_permissions=True)
+            docstatus=1,
+            creation=kwargs.get("event_datetime"),
+        ))
+        event_doc.insert(ignore_permissions=True)
         self.reload()
         self.link_event_files(event_doc, kwargs)
 
