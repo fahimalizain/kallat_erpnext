@@ -6,28 +6,40 @@ kallat.unit_sale.show_extra_work_form = function (frm) {
         JSON.stringify(frappe.get_meta("Extra Work Item").fields)
     );
 
+    const fields = [
+        {
+            label: "Remarks",
+            fieldtype: "Small Text",
+            fieldname: "remarks",
+        },
+        {
+            label: "Extra Works",
+            fieldtype: "Table",
+            fieldname: "extra_work",
+            fields: extra_work_fields,
+        },
+        {
+            label: "Total Additional Cost",
+            fieldtype: "Currency",
+            fieldname: "total",
+            read_only: 1,
+            default: 0,
+        },
+    ]
+
+    if (kallat.can_modify_timestamp()) {
+        fields.unshift({
+            label: "Date Time",
+            fieldtype: "Datetime",
+            reqd: 1,
+            default: frappe.datetime.now_datetime(),
+            fieldname: "event_datetime"
+        })
+    }
+
     const d = new frappe.ui.Dialog({
         title: "Add Extra Work",
-        fields: [
-            {
-                label: "Remarks",
-                fieldtype: "Small Text",
-                fieldname: "remarks",
-            },
-            {
-                label: "Extra Works",
-                fieldtype: "Table",
-                fieldname: "extra_work",
-                fields: extra_work_fields,
-            },
-            {
-                label: "Total Additional Cost",
-                fieldtype: "Currency",
-                fieldname: "total",
-                read_only: 1,
-                default: 0,
-            },
-        ],
+        fields: fields,
         primary_action_label: "Add",
         primary_action(values) {
             frm.call({
@@ -37,6 +49,7 @@ kallat.unit_sale.show_extra_work_form = function (frm) {
                 args: {
                     remarks: values.remarks,
                     extra_work: values.extra_work,
+                    event_datetime: values.event_datetime,
                 },
                 callback(r) {
                     if (r.exc) {

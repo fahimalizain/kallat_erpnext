@@ -2,41 +2,54 @@ frappe.provide("kallat.unit_sale")
 
 kallat.unit_sale.show_hand_over_form = function (frm) {
     let fileIdx = 0;
+
+    const fields = [
+        {
+            label: "Remarks",
+            fieldtype: "Small Text",
+            fieldname: "remarks",
+        },
+        {
+            label: "Add File",
+            fieldtype: "Button",
+            click: () => {
+                fileIdx++;
+
+                // if (fileIdx % 2 === 0) {
+                //   // Add Column Break
+                //   let df = "files_col_b_" + fileIdx
+                //   d.make_field({
+                //     fieldname: df,
+                //     fieldtype: "Column Break"
+                //   });
+                //   d.fields_dict[df].refresh();
+                // }
+
+                const fieldName = "file_" + fileIdx;
+                d.make_field({
+                    label: "File-" + fileIdx,
+                    fieldname: fieldName,
+                    fieldtype: "Attach",
+                    reqd: 1,
+                });
+                d.fields_dict[fieldName].refresh();
+            },
+        },
+    ]
+
+    if (kallat.can_modify_timestamp()) {
+        fields.unshift({
+            label: "Date Time",
+            fieldtype: "Datetime",
+            reqd: 1,
+            default: frappe.datetime.now_datetime(),
+            fieldname: "event_datetime"
+        })
+    }
+
     const d = new frappe.ui.Dialog({
         title: "Hand Over Unit",
-        fields: [
-            {
-                label: "Remarks",
-                fieldtype: "Small Text",
-                fieldname: "remarks",
-            },
-            {
-                label: "Add File",
-                fieldtype: "Button",
-                click: () => {
-                    fileIdx++;
-
-                    // if (fileIdx % 2 === 0) {
-                    //   // Add Column Break
-                    //   let df = "files_col_b_" + fileIdx
-                    //   d.make_field({
-                    //     fieldname: df,
-                    //     fieldtype: "Column Break"
-                    //   });
-                    //   d.fields_dict[df].refresh();
-                    // }
-
-                    const fieldName = "file_" + fileIdx;
-                    d.make_field({
-                        label: "File-" + fileIdx,
-                        fieldname: fieldName,
-                        fieldtype: "Attach",
-                        reqd: 1,
-                    });
-                    d.fields_dict[fieldName].refresh();
-                },
-            },
-        ],
+        fields: fields,
         primary_action_label: "Update",
         primary_action(values) {
             frm.call({

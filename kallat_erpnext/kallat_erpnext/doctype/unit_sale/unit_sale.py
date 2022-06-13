@@ -108,7 +108,7 @@ class UnitSale(Document):
         self.reload()
 
     @frappe.whitelist()
-    def sign_agreement(self, agreement_file, agreement_price, remarks=None):
+    def sign_agreement(self, agreement_file, agreement_price, remarks=None, **kwargs):
         frappe.get_doc(dict(
             doctype="Unit Sale Event",
             type=UnitSaleEventType.UNIT_SALE_UPDATE.value,
@@ -116,6 +116,7 @@ class UnitSale(Document):
             unit_sale=self.name,
             remarks=remarks,
             docstatus=1,
+            creation=kwargs.get("event_datetime", None),
             misc=frappe.as_json(dict(
                 agreement_file=agreement_file,
                 agreement_price=flt(agreement_price, precision=2)
@@ -131,6 +132,7 @@ class UnitSale(Document):
             unit_sale=self.name,
             remarks=remarks,
             docstatus=1,
+            creation=kwargs.get("event_datetime", None),
         )).insert(ignore_permissions=True)
         self.link_event_files(event_doc, kwargs)
 
@@ -143,6 +145,7 @@ class UnitSale(Document):
             unit_sale=self.name,
             remarks=remarks,
             docstatus=1,
+            creation=kwargs.get("event_datetime", None),
         )).insert(ignore_permissions=True)
         self.link_event_files(event_doc, kwargs)
 
@@ -165,6 +168,7 @@ class UnitSale(Document):
             unit_sale=self.name,
             remarks=remarks,
             docstatus=1,
+            creation=args.get("event_datetime", None),
         )).insert(ignore_permissions=True)
 
     def link_event_files(self, event_doc, files):

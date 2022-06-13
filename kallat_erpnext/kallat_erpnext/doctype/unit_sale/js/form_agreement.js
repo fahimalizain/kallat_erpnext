@@ -1,28 +1,41 @@
 frappe.provide("kallat.unit_sale")
 
 kallat.unit_sale.show_agreement_form = function (frm) {
+
+    const fields = [
+        {
+            label: "Agreement PDF",
+            fieldtype: "Attach",
+            reqd: 1,
+            fieldname: "agreement_file",
+        },
+        {
+            label: "Agreement Price",
+            fieldtype: "Currency",
+            reqd: 1,
+            fieldname: "agreement_price",
+            default: frm.doc.suggested_price,
+        },
+        {
+            label: "Remarks",
+            fieldtype: "Small Text",
+            fieldname: "remarks",
+        },
+    ]
+
+    if (kallat.can_modify_timestamp()) {
+        fields.unshift({
+            label: "Date Time",
+            fieldtype: "Datetime",
+            reqd: 1,
+            default: frappe.datetime.now_datetime(),
+            fieldname: "event_datetime"
+        })
+    }
+
     const d = new frappe.ui.Dialog({
         title: "Upload Agreement PDF",
-        fields: [
-            {
-                label: "Agreement PDF",
-                fieldtype: "Attach",
-                reqd: 1,
-                fieldname: "agreement_file",
-            },
-            {
-                label: "Agreement Price",
-                fieldtype: "Currency",
-                reqd: 1,
-                fieldname: "agreement_price",
-                default: frm.doc.suggested_price,
-            },
-            {
-                label: "Remarks",
-                fieldtype: "Small Text",
-                fieldname: "remarks",
-            },
-        ],
+        fields: fields,
         primary_action_label: "Sign Agreement",
         primary_action(values) {
             if (!values.agreement_file) {

@@ -9,38 +9,50 @@ kallat.unit_sale.show_work_progress_form = function (frm) {
     const nextStatus = kallat.unit_sale.WORK_STATUSES[statusIdx + 1];
     let fileIdx = 0;
 
+    const fields = [
+        {
+            label: "Next Status",
+            fieldtype: "Data",
+            read_only: 1,
+            fieldname: "new_status",
+            default: nextStatus,
+        },
+        {
+            label: "Remarks",
+            fieldtype: "Small Text",
+            fieldname: "remarks",
+        },
+        {
+            label: "Add File",
+            fieldtype: "Button",
+            click: () => {
+                fileIdx++;
+
+                const fieldName = "file_" + fileIdx;
+                d.make_field({
+                    label: "File-" + fileIdx,
+                    fieldname: fieldName,
+                    fieldtype: "Attach",
+                    reqd: 1,
+                });
+                d.fields_dict[fieldName].refresh();
+            },
+        },
+    ]
+
+    if (kallat.can_modify_timestamp()) {
+        fields.unshift({
+            label: "Date Time",
+            fieldtype: "Datetime",
+            reqd: 1,
+            default: frappe.datetime.now_datetime(),
+            fieldname: "event_datetime"
+        })
+    }
+
     const d = new frappe.ui.Dialog({
         title: "Update Unit Status",
-        fields: [
-            {
-                label: "Next Status",
-                fieldtype: "Data",
-                read_only: 1,
-                fieldname: "new_status",
-                default: nextStatus,
-            },
-            {
-                label: "Remarks",
-                fieldtype: "Small Text",
-                fieldname: "remarks",
-            },
-            {
-                label: "Add File",
-                fieldtype: "Button",
-                click: () => {
-                    fileIdx++;
-
-                    const fieldName = "file_" + fileIdx;
-                    d.make_field({
-                        label: "File-" + fileIdx,
-                        fieldname: fieldName,
-                        fieldtype: "Attach",
-                        reqd: 1,
-                    });
-                    d.fields_dict[fieldName].refresh();
-                },
-            },
-        ],
+        fields: fields,
         primary_action_label: "Update",
         primary_action(values) {
             frm.call({
