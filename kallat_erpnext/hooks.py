@@ -58,6 +58,7 @@ app_include_js = ["/assets/kallat_erpnext/js/utils.js"]
 # include js in doctype views
 doctype_js = {"Unit Sale": [
     "kallat_erpnext/doctype/unit_sale/js/constants.js",
+    "kallat_erpnext/doctype/unit_sale/js/form_confirm_booking.js",
     "kallat_erpnext/doctype/unit_sale/js/form_agreement.js",
     "kallat_erpnext/doctype/unit_sale/js/form_extra_work.js",
     "kallat_erpnext/doctype/unit_sale/js/form_hand_over.js",

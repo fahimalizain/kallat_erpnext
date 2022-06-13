@@ -27,20 +27,7 @@ frappe.ui.form.on("Unit Sale", {
       frm.add_custom_button(
         "Confirm Booking",
         () => {
-          frappe.confirm("Are you sure to confirm the Booking ?", () => {
-            frm.call({
-              method: "confirm_booking",
-              doc: frm.doc,
-              freeze: true,
-              callback(r) {
-                if (r.exc) {
-                  return;
-                }
-                frappe.msgprint("Booking Confirmed!");
-                frm.reload_doc();
-              },
-            });
-          });
+          kallat.unit_sale.show_confirm_booking_form(frm);
         },
         kallat.unit_sale.UNIT_SALE_FRM_BTN_GRP
       );

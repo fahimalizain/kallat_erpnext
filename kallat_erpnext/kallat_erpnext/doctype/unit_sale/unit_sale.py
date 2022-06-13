@@ -88,21 +88,22 @@ class UnitSale(Document):
             remarks=remarks,
             amount_received=amount_received,
             docstatus=1,
-            creation=kwargs.get("event_datetime"),
+            creation=kwargs.get("event_datetime", None),
         ))
         event_doc.insert(ignore_permissions=True)
         self.reload()
         self.link_event_files(event_doc, kwargs)
 
     @frappe.whitelist()
-    def confirm_booking(self):
+    def confirm_booking(self, event_datetime=None, **kwargs):
         frappe.get_doc(dict(
             doctype="Unit Sale Event",
             type=UnitSaleEventType.UNIT_SALE_UPDATE.value,
             new_status=UnitSaleStatus.BOOKED.value,
             unit_sale=self.name,
             remarks="Unit Booked",
-            docstatus=1
+            docstatus=1,
+            creation=event_datetime or None,
         )).insert(ignore_permissions=True)
         self.reload()
 
