@@ -1,7 +1,7 @@
 frappe.provide("kallat.unit_sale")
 
 kallat.unit_sale.show_confirm_booking_form = function (frm) {
-    if (kallat.can_modify_timestamp()) {
+    if (kallat.maintenance_mode()) {
         kallat.unit_sale._show_confirm_booking_form(frm);
         return;
     }

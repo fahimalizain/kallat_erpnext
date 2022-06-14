@@ -108,7 +108,7 @@ class UnitSale(Document):
         self.reload()
 
     @frappe.whitelist()
-    def sign_agreement(self, agreement_file, agreement_price, remarks=None, **kwargs):
+    def sign_agreement(self, agreement_price, agreement_file=None, remarks=None, **kwargs):
         frappe.get_doc(dict(
             doctype="Unit Sale Event",
             type=UnitSaleEventType.UNIT_SALE_UPDATE.value,

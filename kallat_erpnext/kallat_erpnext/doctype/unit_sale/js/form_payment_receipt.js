@@ -34,7 +34,7 @@ kallat.unit_sale.show_payment_receipt_form = function (frm) {
         },
     ]
 
-    if (kallat.can_modify_timestamp()) {
+    if (kallat.maintenance_mode()) {
         fields.unshift({
             label: "Date Time",
             fieldtype: "Datetime",

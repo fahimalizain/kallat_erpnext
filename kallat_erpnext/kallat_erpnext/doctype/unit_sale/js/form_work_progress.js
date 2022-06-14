@@ -40,7 +40,7 @@ kallat.unit_sale.show_work_progress_form = function (frm) {
         },
     ]
 
-    if (kallat.can_modify_timestamp()) {
+    if (kallat.maintenance_mode()) {
         fields.unshift({
             label: "Date Time",
             fieldtype: "Datetime",

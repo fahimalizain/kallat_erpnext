@@ -5,6 +5,6 @@ frappe.provide("kallat")
  * - Used in UnitSale's forms
  * @returns Boolean
  */
-kallat.can_modify_timestamp = function () {
+kallat.maintenance_mode = function () {
     return !!frappe.boot.kallat_modify_timestamp;
 }

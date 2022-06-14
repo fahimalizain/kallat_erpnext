@@ -6,7 +6,7 @@ kallat.unit_sale.show_agreement_form = function (frm) {
         {
             label: "Agreement PDF",
             fieldtype: "Attach",
-            reqd: 1,
+            reqd: kallat.maintenance_mode() ? 0 : 1,
             fieldname: "agreement_file",
         },
         {
@@ -23,7 +23,7 @@ kallat.unit_sale.show_agreement_form = function (frm) {
         },
     ]
 
-    if (kallat.can_modify_timestamp()) {
+    if (kallat.maintenance_mode()) {
         fields.unshift({
             label: "Date Time",
             fieldtype: "Datetime",
@@ -38,7 +38,7 @@ kallat.unit_sale.show_agreement_form = function (frm) {
         fields: fields,
         primary_action_label: "Sign Agreement",
         primary_action(values) {
-            if (!values.agreement_file) {
+            if (!values.agreement_file && !kallat.maintenance_mode()) {
                 frappe.msgprint("Please upload agreement file");
                 return;
             }

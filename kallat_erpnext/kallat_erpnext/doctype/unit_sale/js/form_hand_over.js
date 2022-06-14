@@ -37,7 +37,7 @@ kallat.unit_sale.show_hand_over_form = function (frm) {
         },
     ]
 
-    if (kallat.can_modify_timestamp()) {
+    if (kallat.maintenance_mode()) {
         fields.unshift({
             label: "Date Time",
             fieldtype: "Datetime",
