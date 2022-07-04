@@ -1,0 +1,22 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2022-07-06 11:01:42.137560",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2022-07-06 11:32:48.315218",
+ "modified_by": "Administrator",
+ "module": "Kallat Erpnext",
+ "name": "Total Amount to be Received",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Unit Sale",
+ "report_name": "Total Amount to be Received",
+ "report_type": "Script Report",
+ "roles": []
+}
