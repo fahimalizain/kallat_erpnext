@@ -128,6 +128,9 @@ def get_payment_summary(
     Gets a list of payment receipts made against the provided list of UnitSales
     Before specified time
     """
+    if not len(unit_sales):
+        return dict()
+
     last_day = get_last_day(parser.parse(f"1 {filters.get('month')} {filters.get('year')}"))
     first_day = get_first_day(last_day)
 
