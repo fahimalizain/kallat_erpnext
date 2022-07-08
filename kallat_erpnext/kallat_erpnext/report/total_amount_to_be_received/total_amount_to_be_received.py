@@ -7,7 +7,7 @@ import frappe
 """
 Total Amount to be Received
 ---------------------------
-On Signed Agreement Sales, amount left to receive from Total.
+On Booking Confirmed Unit Sales, amount left to receive from Total.
 This is independent of Due Amounts
 """
 
