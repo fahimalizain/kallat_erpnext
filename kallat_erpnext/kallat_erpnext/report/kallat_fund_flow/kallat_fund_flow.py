@@ -50,7 +50,7 @@ def get_columns(filters: dict):
         dict(label="Villa No", fieldname="plot", fieldtype="Data"),
         dict(label="Sq Ft.", fieldname="sq_ft", fieldtype="Float"),
         dict(label="Sale", fieldname="agreement_price", fieldtype="Currency"),
-        dict(label="Sale w/ 5%", fieldname="total_price", fieldtype="Currency"),
+        # dict(label="Sale w/ 5%", fieldname="total_price", fieldtype="Currency"),
         dict(label="Opening Receipt", fieldname="opening_receipt", fieldtype="Currency"),
         dict(label="Current Amount", fieldname="received_this_month", fieldtype="Currency"),
         dict(label="Total Received", fieldname="total_received", fieldtype="Currency"),
@@ -179,6 +179,5 @@ def update_amounts(data: List[dict], receipt_map: Dict[str, SalePaymentReceiptSu
         row.received_this_month = payment_summary.received_this_month
 
         row.agreement_price = row.agreement_price or row.suggested_price
-        row.total_price = flt(row.agreement_price * 1.05, precision=2)
-        row.balance_amount = row.total_price - row.total_received
-        row.percent_paid = flt(row.total_received * 100 / row.total_price, 2)
+        row.balance_amount = row.agreement_price - row.total_received
+        row.percent_paid = flt(row.total_received * 100 / row.agreement_price, 2)
