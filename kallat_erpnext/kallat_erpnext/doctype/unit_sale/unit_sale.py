@@ -12,6 +12,11 @@ from kallat_erpnext.kallat_erpnext import UnitSaleEventType, UnitSaleStatus, Uni
 
 class UnitSale(Document):
 
+    project: str
+    plot: str
+    unit_type: str
+    status: str
+    work_status: str
     extra_work: List[dict]
     total_extra_work: float
     agreement_price: float
@@ -31,11 +36,17 @@ class UnitSale(Document):
         self.update_due_and_received()
 
     def validate_plot(self):
+        """
+        Plot should be of the same project
+        """
         plot = frappe.get_doc("Kallat Plot", self.plot)
         if plot.project != self.project:
             frappe.throw(f"Plot {plot.title} do not belong to project {self.project}")
 
     def validate_unit_type(self):
+        """
+        Unit Type should be of the same project
+        """
         unit_type = frappe.get_doc("Kallat Unit Type", self.unit_type)
         if unit_type.project != self.project:
             frappe.throw(f"UnitType {unit_type.title} do not belong to project {self.project}")

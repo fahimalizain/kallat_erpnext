@@ -1,8 +1,11 @@
 # Copyright (c) 2022, Fahim Ali Zain and Contributors
 # See license.txt
 
-import frappe
 import unittest
+import random
+
+import frappe
+
 from kallat_erpnext.kallat_erpnext.doctype.kallat_project.test_kallat_project import \
     KallatProjectFixtures
 from kallat_erpnext.tests import TestFixture
@@ -24,7 +27,7 @@ class KallatPlotFixtures(TestFixture):
                     doctype="Kallat Plot",
                     title=f"{project.name[:3].upper()}-{f.random_int()}{i}",
                     project=project.name,
-                    price=f.random_int(),
+                    price=2000000 + 500000 * random.randint(3, 6),
                 ).insert())
 
 

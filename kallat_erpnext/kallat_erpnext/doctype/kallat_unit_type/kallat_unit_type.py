@@ -4,5 +4,8 @@
 # import frappe
 from frappe.model.document import Document
 
+
 class KallatUnitType(Document):
-	pass
+    title: str
+    project: str
+    price: float
