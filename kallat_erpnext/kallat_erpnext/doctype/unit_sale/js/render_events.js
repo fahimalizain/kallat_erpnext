@@ -101,7 +101,7 @@ kallat.unit_sale.make_events_html = function (frm, events) {
             </div>
 
             <div class="flex-column">
-              <span class="px-2 flex-grow-1">${moment(event.creation).format(
+              <span class="px-2 flex-grow-1">${moment(event.date_time).format(
             "Do MMM YY"
         )}</span>
               <a class="text-muted" href="/app/unit-sale-event/${event.name}">${event.name
