@@ -1,7 +1,8 @@
 # Copyright (c) 2022, Fahim Ali Zain and contributors
 # For license information, please see license.txt
 
-from typing import List
+from datetime import datetime
+from typing import List, Union
 import frappe
 
 # import frappe
@@ -12,6 +13,7 @@ from kallat_erpnext.kallat_erpnext import UnitSaleEventType, UnitSaleStatus, Uni
 
 class UnitSale(Document):
 
+    date_time: Union[str, datetime]
     project: str
     plot: str
     unit_type: str
@@ -102,8 +104,8 @@ class UnitSale(Document):
             creation=kwargs.get("event_datetime", None),
         ))
         event_doc.insert(ignore_permissions=True)
-        self.reload()
         self.link_event_files(event_doc, kwargs)
+        self.reload()
 
     @frappe.whitelist()
     def confirm_booking(self, event_datetime=None, **kwargs):
@@ -133,6 +135,7 @@ class UnitSale(Document):
                 agreement_price=flt(agreement_price, precision=2)
             ))
         )).insert(ignore_permissions=True)
+        self.reload()
 
     @frappe.whitelist()
     def update_work_status(self, new_status: str, remarks=None, **kwargs):
@@ -146,6 +149,7 @@ class UnitSale(Document):
             creation=kwargs.get("event_datetime", None),
         )).insert(ignore_permissions=True)
         self.link_event_files(event_doc, kwargs)
+        self.reload()
 
     @frappe.whitelist()
     def hand_over_unit(self, remarks=None, **kwargs):
@@ -159,6 +163,7 @@ class UnitSale(Document):
             creation=kwargs.get("event_datetime", None),
         )).insert(ignore_permissions=True)
         self.link_event_files(event_doc, kwargs)
+        self.reload()
 
     @frappe.whitelist()
     def add_extra_work(self, args: dict):
@@ -181,6 +186,7 @@ class UnitSale(Document):
             docstatus=1,
             creation=args.get("event_datetime", None),
         )).insert(ignore_permissions=True)
+        self.reload()
 
     def link_event_files(self, event_doc, files):
         if not files or "num_files" not in files:
