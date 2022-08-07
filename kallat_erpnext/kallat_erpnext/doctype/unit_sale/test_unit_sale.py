@@ -1,6 +1,7 @@
 # Copyright (c) 2022, Fahim Ali Zain and Contributors
 # See license.txt
 
+from typing import List, Union
 import unittest
 import random
 
@@ -9,6 +10,7 @@ from frappe.utils import flt
 
 from kallat_erpnext.tests import TestFixture
 from kallat_erpnext.test_customer import CustomerFixtures
+from kallat_erpnext.kallat_erpnext import UnitSaleEvent
 from kallat_erpnext.kallat_erpnext.tests import (
     KallatPlotFixtures, KallatProjectFixtures, KallatUnitTypeFixtures)
 
@@ -55,6 +57,17 @@ class UnitSaleFixtures(TestFixture):
 
         self.add_document(unit_sale)
         return unit_sale
+
+    def get_all_events_of(self, unit_sale: Union[UnitSale, str]) -> List[UnitSaleEvent]:
+        if not isinstance(unit_sale, UnitSale):
+            unit_sale = frappe.get_doc("Unit Sale", unit_sale)
+
+        events = unit_sale.get_events()
+        _docs = []
+        for event in events:
+            _docs.append(frappe.get_doc("Unit Sale Event", event.name))
+
+        return _docs
 
 
 class TestUnitSale(unittest.TestCase):

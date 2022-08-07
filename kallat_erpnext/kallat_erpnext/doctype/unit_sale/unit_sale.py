@@ -90,7 +90,7 @@ class UnitSale(Document):
     def get_events(self):
         return frappe.get_all("Unit Sale Event", {
             "docstatus": 1, "unit_sale": self.name,
-        }, ["*"], order_by="creation asc") or []
+        }, ["*"], order_by="date_time asc") or []
 
     @frappe.whitelist()
     def make_payment_receipt(self, amount_received, remarks=None, **kwargs):

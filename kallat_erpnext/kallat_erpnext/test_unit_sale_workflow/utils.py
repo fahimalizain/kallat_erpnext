@@ -1,7 +1,7 @@
 from unittest import TestCase
 from datetime import datetime
 
-from frappe.utils import fmt_money, add_to_date, flt
+from frappe.utils import fmt_money, add_to_date, flt, get_datetime
 
 from kallat_erpnext.kallat_erpnext import (
     UnitSaleStatus, UnitWorkStatus, UnitSale
@@ -63,6 +63,39 @@ class TestUnitSaleWorkflowBase(TestCase):
         self.assertEqual(unit_sale.docstatus, 1)
         self.assertFalse(unit_sale.status)
         self.assertEqual(unit_sale.work_status, UnitWorkStatus.NOT_STARTED.value)
+
+        return unit_sale
+
+    def _get_test_sale_structure_completed(self):
+        """
+        Structure Completion is somewhere in the middle of a Sale Process
+        """
+        unit_sale = self._get_test_sale()
+        _date_time = get_datetime(unit_sale.date_time)
+
+        #################################################
+        #               Confirm Booking                 #
+        #################################################
+        _date_time = add_to_date(_date_time, days=1)
+        self._confirm_booking(unit_sale=unit_sale, date_time=_date_time)
+
+        #################################################
+        #               Sign Agreement                  #
+        #################################################
+        _date_time = add_to_date(_date_time, days=1)
+        self._sign_agreement(unit_sale=unit_sale, date_time=_date_time)
+
+        #################################################
+        #               Work Progression                #
+        #################################################
+        _date_time = add_to_date(_date_time, days=1)
+        self._work_complete_foundation(unit_sale=unit_sale, date_time=_date_time)
+
+        _date_time = add_to_date(_date_time, days=1)
+        self._work_complete_first_floor_slab(unit_sale=unit_sale, date_time=_date_time)
+
+        _date_time = add_to_date(_date_time, days=1)
+        self._work_complete_structure(unit_sale=unit_sale, date_time=_date_time)
 
         return unit_sale
 
