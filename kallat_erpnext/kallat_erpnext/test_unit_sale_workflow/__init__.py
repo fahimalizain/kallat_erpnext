@@ -15,4 +15,12 @@ def load_tests(loader: TestLoader, test_classes, pattern):
 
 
 def get_unit_sale_workflow_tests():
-    return []
+    from .test_simple_sale_till_completion import TestSimpleSaleTillCompletion
+    from .test_event_cancellation import TestEventCancellation
+    from .test_event_date_updates import TestEventDateUpdates
+
+    return [
+        TestSimpleSaleTillCompletion,
+        TestEventCancellation,
+        TestEventDateUpdates,
+    ]

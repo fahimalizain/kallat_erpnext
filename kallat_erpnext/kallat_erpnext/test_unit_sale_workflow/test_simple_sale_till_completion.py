@@ -3,9 +3,8 @@ from frappe.utils import get_datetime, add_to_date
 from frappe.utils.data import flt, fmt_money
 
 from kallat_erpnext.kallat_erpnext import (
-    UnitSaleStatus, UnitWorkStatus
+    UnitSaleStatus, UnitWorkStatus, UnitSale
 )
-from kallat_erpnext.kallat_erpnext.doctype.unit_sale.unit_sale import UnitSale
 from .utils import TestUnitSaleWorkflowBase
 
 

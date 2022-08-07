@@ -1,37 +1,15 @@
-from enum import Enum
 from unittest import TestLoader, TestSuite
+from .enums import (  # noqa: F401
+    KallatPlotStatus,
+    UnitSaleStatus,
+    UnitWorkStatus,
+    UnitSaleEventType,
+)
 
-
-class KallatPlotStatus(Enum):
-    EMPTY_PLOT = "Empty Plot"
-    BOOKED = "Booked"
-    WIP = "Work In Progress"
-    COMPLETED = "Completed"
-
-
-class UnitSaleStatus(Enum):
-    NONE = ""
-    BOOKED = "Booked"
-    AGREEMENT_SIGNED = "Agreement Signed"
-    WIP = "Work In Progress"
-    HANDED_OVER = "Handed Over"
-    COMPLETED = "Completed"
-
-
-class UnitWorkStatus(Enum):
-    NOT_STARTED = "Not Started"
-    FOUNDATION_COMPLETED = "Foundation Completed"
-    FIRST_FLOOR_SLAB_COMPLETED = "1st Floor Slab Completed"
-    STRUCTURE_COMPLETED = "Structure Completed"
-    TILING_COMPLETED = "Tiling Completed"
-
-
-class UnitSaleEventType(Enum):
-    UNIT_SALE_UPDATE = "Unit Sale Update"
-    WORK_STATUS_UPDATE = "Work Status Update"
-    PAYMENT_RECEIPT = "Payment Receipt"
-    LATE_FEE_APPLIED = "Late Fee Applied"
-    ADD_EXTRA_WORK = "Add Extra Work"
+from .doctype.kallat_project.kallat_project import KallatProject  # noqa: F401
+from .doctype.kallat_plot.kallat_plot import KallatPlot  # noqa: F401
+from .doctype.unit_sale_event.unit_sale_event import UnitSaleEvent  # noqa: F401
+from .doctype.unit_sale.unit_sale import UnitSale  # noqa: F401
 
 
 def load_tests(loader: TestLoader, test_classes, pattern):
