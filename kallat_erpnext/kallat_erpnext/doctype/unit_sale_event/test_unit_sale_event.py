@@ -13,10 +13,21 @@ from kallat_erpnext.tests import TestFixture
 class UnitSaleEventFixtures(TestFixture):
     def __init__(self):
         super().__init__()
-        self.DEFAULT_DOCTYPE = "Unit Sale"
+        self.DEFAULT_DOCTYPE = "Unit Sale Event"
 
     def make_fixtures(self):
         pass
+
+    def tearDown(self):
+        """
+        Order them based on their date_time in decreasing order first
+        """
+        self.fixtures[self.DEFAULT_DOCTYPE] = sorted(
+            list(self.fixtures[self.DEFAULT_DOCTYPE]),
+            key=lambda x: x.get("date_time"),
+            reverse=True)
+
+        return super().tearDown()
 
     def load_events(self, unit_sales: List[str]):
         events = frappe.get_all("Unit Sale Event", {"unit_sale": ["IN", unit_sales]})

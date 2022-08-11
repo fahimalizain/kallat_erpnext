@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 
 import frappe
-from frappe.utils import now
+from frappe.utils import now, get_link_to_form
 from frappe.model.document import Document
 
 from kallat_erpnext.kallat_erpnext import (
@@ -48,6 +48,7 @@ class UnitSaleEvent(Document):
     unit_sale_doc: "UnitSale"
     amount_due: float
     percent_due: float
+    unit_sale: str
 
     def validate(self):
         self.status = ""  # None status
@@ -55,16 +56,48 @@ class UnitSaleEvent(Document):
             self.date_time = now()
 
     def before_submit(self):
+        self.validate_future_events()
         self.run_handler(for_cancel=False)
+
+    def before_cancel(self):
+        self.validate_future_events()
+        self.run_handler(for_cancel=True)
+
+    def before_update_after_submit(self):
+        self.validate_future_events()
 
     def on_submit(self):
         self.unit_sale_doc.flags.ignore_validate_update_after_submit = True
         self.unit_sale_doc.save(ignore_permissions=True)
 
     def on_cancel(self):
-        self.run_handler(for_cancel=True)
         self.unit_sale_doc.flags.ignore_validate_update_after_submit = True
         self.unit_sale_doc.save(ignore_permissions=True)
+
+    def validate_future_events(self):
+        """
+        - Before Submit
+        - On Cancel
+        - On Update After Submit
+
+        These are the different Events when this could be invoked. These can be understood
+        using self._action
+        """
+        events = frappe.get_all(
+            "Unit Sale Event",
+            filters=dict(
+                unit_sale=self.unit_sale,
+                name=["!=", self.name],
+                date_time=[">=", self.date_time]
+            ),
+            order_by="date_time asc")
+
+        if len(events):
+            _action = "cancel" if self._action == "cancel" else "make updates to"
+            frappe.throw(frappe._(
+                f"You cannot {_action} this event when"
+                " there exists future Events like {}").format(
+                get_link_to_form(self.doctype, events[0].name)))
 
     def run_handler(self, for_cancel=False):
         self.unit_sale_doc = frappe.get_doc("Unit Sale", self.unit_sale)
