@@ -1,0 +1,95 @@
+{
+ "actions": [],
+ "creation": "2022-08-14 17:50:39.162285",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "scheduled_date_time",
+  "status",
+  "sent_on",
+  "template_key",
+  "context",
+  "recipients",
+  "channels"
+ ],
+ "fields": [
+  {
+   "fieldname": "scheduled_date_time",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Scheduled Date Time",
+   "read_only": 1,
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "template_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Template Key",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "context",
+   "fieldtype": "Code",
+   "in_list_view": 1,
+   "label": "Context",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "recipients",
+   "fieldtype": "Code",
+   "in_list_view": 1,
+   "label": "Recipients",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Scheduled\nCancelled\nSent",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "sent_on",
+   "fieldtype": "Datetime",
+   "label": "Sent On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "channels",
+   "fieldtype": "Code",
+   "label": "Channels",
+   "read_only": 1,
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-08-14 17:52:41.055880",
+ "modified_by": "Administrator",
+ "module": "Kallat Erpnext",
+ "name": "Kallat Notification Schedule",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

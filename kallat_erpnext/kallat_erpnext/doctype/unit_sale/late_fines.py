@@ -1,3 +1,4 @@
+from datetime import datetime
 import frappe
 from frappe.utils import flt, cint, now_datetime, date_diff, fmt_money
 
@@ -27,6 +28,13 @@ def check_late_fine(sale: UnitSale):
     last_fine_date = get_last_fine_date(sale=sale)
 
     days_since_last_event = date_diff(now_datetime(), recent_due_event_date)
+    days_since_last_fine = date_diff(now_datetime(), last_fine_date) if last_fine_date else -1
+
+    sale.trigger_due_amount_notification(
+        days_since_last_event=days_since_last_event,
+        days_since_last_fine=days_since_last_fine,
+    )
+
     if days_since_last_event < 7:
         return
 
@@ -82,7 +90,7 @@ def get_all_fine_events(sale: UnitSale):
     return fine_events
 
 
-def get_last_fine_date(sale: UnitSale):
+def get_last_fine_date(sale: UnitSale) -> datetime:
     events = get_all_fine_events()
     if not len(events):
         return None

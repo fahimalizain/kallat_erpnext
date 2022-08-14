@@ -6,12 +6,14 @@ from typing import List, Union
 import frappe
 
 # import frappe
+# from frappe.model.document import Document
 from frappe.utils import flt
-from frappe.model.document import Document
+
+from .notification import UnitSaleNotificationHandler
 from kallat_erpnext.kallat_erpnext import UnitSaleEventType, UnitSaleStatus, UnitWorkStatus
 
 
-class UnitSale(Document):
+class UnitSale(UnitSaleNotificationHandler):
 
     date_time: Union[str, datetime]
     project: str
@@ -107,6 +109,13 @@ class UnitSale(Document):
         self.link_event_files(event_doc, kwargs)
         self.reload()
 
+        # Trigger Payment Receipt Notifications
+        self.send_notification(
+            self.UNIT_SALE_PAYMENT_RECEIPT,
+            context=self.get_context(),
+            recipients=self.get_customer_recipients(channels=self.DEFAULT_CHANNELS)
+        )
+
     @frappe.whitelist()
     def confirm_booking(self, event_datetime=None, **kwargs):
         frappe.get_doc(dict(
@@ -150,6 +159,13 @@ class UnitSale(Document):
         )).insert(ignore_permissions=True)
         self.link_event_files(event_doc, kwargs)
         self.reload()
+
+        # Trigger WorkStatus Updated Notifications
+        self.send_notification(
+            self.UNIT_SALE_WORK_STATUS_UPDATED,
+            context=self.get_context(),
+            recipients=self.get_customer_recipients(channels=self.DEFAULT_CHANNELS)
+        )
 
     @frappe.whitelist()
     def hand_over_unit(self, remarks=None, **kwargs):

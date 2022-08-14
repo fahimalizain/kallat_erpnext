@@ -42,9 +42,9 @@ fixtures = [
         "unit-sale-land-registration",
         "unit-sale-due-final-reminder",
         "unit-sale-due-overdue-reminder",
-        "unit-sale-due-week-1-reminder-3",
-        "unit-sale-due-week-1-reminder-2",
         "unit-sale-due-week-1-reminder-1",
+        "unit-sale-due-week-1-reminder-2",
+        "unit-sale-due-week-1-reminder-3",
     ]]]}
 ]
 
