@@ -21,7 +21,7 @@
   },
   {
    "fieldname": "template",
-   "fieldtype": "Code",
+   "fieldtype": "Small Text",
    "in_list_view": 1,
    "label": "Template",
    "reqd": 1
@@ -29,7 +29,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-13 16:43:43.475370",
+ "modified": "2022-08-14 09:40:08.224745",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Kallat SMS Template",

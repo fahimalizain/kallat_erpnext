@@ -1,0 +1,134 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Kallat SMS Template",
+  "modified": "2022-08-14 09:40:47.724578",
+  "name": "unit-sale-submitted",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "template": "Dear Sir, we have temporarily booked you a villa as per discussion with our marketing team. Please remit IN 2,50,000 for confirmation - Kallat Pearl Builders LLP",
+  "template_key": "unit-sale-submitted"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Kallat SMS Template",
+  "modified": "2022-08-14 09:40:21.613088",
+  "name": "unit-sale-booking-confirmed",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "template": "Dear Sir, Welcome to Kallat family. We have booked you a villa at \"The Kallat Pearl\". Booking amount IN 2,50,000 received. - Kallat Pearl Builders LLP",
+  "template_key": "unit-sale-booking-confirmed"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Kallat SMS Template",
+  "modified": "2022-08-14 11:15:16.949494",
+  "name": "lead-created",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "template": "Thanks for showing interest with KALLAT PEARL BUILDERS LLP, our Marketing Team will contact you soon",
+  "template_key": "lead-created"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Kallat SMS Template",
+  "modified": "2022-08-14 11:16:09.793115",
+  "name": "unit-sale-agreement-reminder",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "template": "Dear Sir, Agreement has to be executed within 2 to 3 weeks. Please remit 40% of the total before Agreement Execution - Kallat Pearl Builders LLP",
+  "template_key": "unit-sale-agreement-reminder"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Kallat SMS Template",
+  "modified": "2022-08-14 11:16:39.652745",
+  "name": "unit-sale-work-status-updated",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "template": "Dear Sir, your villa construction status is {{ doc.work_status }}. We humbly request you to release the balance amount- Kallat Pearl Builders LLP",
+  "template_key": "unit-sale-work-status-updated"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Kallat SMS Template",
+  "modified": "2022-08-14 11:29:19.848643",
+  "name": "unit-sale-due-week-1-reminder-1",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "template": "Dear Sir, your villa construction will be delayed if prompt payment are not released on time - Kallat Pearl Builders LLP",
+  "template_key": "unit-sale-due-week-1-reminder-1"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Kallat SMS Template",
+  "modified": "2022-08-14 11:30:04.304986",
+  "name": "unit-sale-due-week-1-reminder-2",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "template": "Dear Sir, this is to remind you that your payment will be due in 2 days. Please note for delayed payments a late fee of 2% of the total due will be charged - Kallat Pearl Builders LLP",
+  "template_key": "unit-sale-due-week-1-reminder-2"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Kallat SMS Template",
+  "modified": "2022-08-14 11:30:35.557634",
+  "name": "unit-sale-due-week-1-reminder-3",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "template": "Dear Sir, Payments against your villa is due from tomorrow. Further delay to clear the amount will lead to delay in handing over of your villa as committed. NB: Delayed payments a late fee of 2% of the total due will be charged - Kallat Pearl Builders LLP",
+  "template_key": "unit-sale-due-week-1-reminder-3"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Kallat SMS Template",
+  "modified": "2022-08-14 11:31:19.951681",
+  "name": "unit-sale-due-overdue-reminder",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "template": "Dear Sir, Payment against your villa booking is overdue. We would be grateful to you if you could\nsettle our dues at the earliest - Kallat Pearl Builders LLP",
+  "template_key": "unit-sale-due-overdue-reminder"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Kallat SMS Template",
+  "modified": "2022-08-14 11:32:06.422340",
+  "name": "unit-sale-due-final-reminder",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "template": "Dear Sir, your payment is overdue for many months. We reminded before, but there was no response to that from your end. Your prompt attention to this issue will be highly appreciated - Kallat Pearl Builders LLP",
+  "template_key": "unit-sale-due-final-reminder"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Kallat SMS Template",
+  "modified": "2022-08-14 12:02:25.719485",
+  "name": "unit-sale-land-registration",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "template": "Dear Sir, Greetings from Kallat Group, we have started the registration process. NB: Registration charges extra - Kallat Pearl Builders LLP",
+  "template_key": "unit-sale-land-registration"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Kallat SMS Template",
+  "modified": "2022-08-14 12:03:28.273990",
+  "name": "unit-sale-payment-receipt",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "template": "Dear Sir, we have received your payment against your villa. Receipt will be sent by mail. Have a great day ahead - Kallat Pearl Builders LLP",
+  "template_key": "unit-sale-payment-receipt"
+ }
+]

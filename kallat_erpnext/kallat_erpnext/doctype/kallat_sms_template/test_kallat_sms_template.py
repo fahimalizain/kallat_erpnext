@@ -4,5 +4,6 @@
 # import frappe
 import unittest
 
+
 class TestKallatSMSTemplate(unittest.TestCase):
-	pass
+    pass

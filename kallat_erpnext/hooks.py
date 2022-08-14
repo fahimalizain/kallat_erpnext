@@ -31,6 +31,20 @@ fixtures = [
         "Lead-notes-allow_in_quick_entry",
         "Lead-ends_on-bold",
         "Lead-contact_date-bold",
+    ]]]},
+    {"dt": "Kallat SMS Template", "filters": [["name", "IN", [
+        "lead-created",
+        "unit-sale-submitted",
+        "unit-sale-payment-receipt",
+        "unit-sale-booking-confirmed",
+        "unit-sale-agreement-reminder",
+        "unit-sale-work-status-updated",
+        "unit-sale-land-registration",
+        "unit-sale-due-final-reminder",
+        "unit-sale-due-overdue-reminder",
+        "unit-sale-due-week-1-reminder-3",
+        "unit-sale-due-week-1-reminder-2",
+        "unit-sale-due-week-1-reminder-1",
     ]]]}
 ]
 
