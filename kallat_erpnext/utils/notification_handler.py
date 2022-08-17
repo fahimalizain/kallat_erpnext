@@ -3,7 +3,7 @@ from typing import List
 
 
 import frappe
-
+from frappe.utils import add_to_date, get_datetime
 from frappe.model.document import Document
 
 
@@ -18,12 +18,78 @@ class NotificationRecipientItem(frappe._dict):
     user_identifier: str
 
 
-def send_notification(
+class NotificationScheduleStatus(Enum):
+    SCHEDULED = "Scheduled"
+    CANCELLED = "Cancelled"
+    SENT = "Sent"
+
+
+def _send_notification(
     template_key: str,
     context: dict,
-    recipients: List[NotificationRecipientItem]
+    recipients: List[NotificationRecipientItem],
+    *args, **kwargs
 ):
-    pass
+    """
+    Send a Notification
+    """
+    from .sms import send_sms
+    from .email import send_email
+
+    for recipient in recipients:
+        if recipient.channel == NotificationChannel.SMS:
+            send_sms()
+        elif recipient.channel == NotificationChannel.EMAIL:
+            send_email()
+
+
+def _schedule_notification(
+    template_key: str,
+    context: dict,
+    recipients: List[NotificationRecipientItem],
+    days=0,
+    hours=0,
+    *args, **kwargs
+):
+    """
+    Schedule a Notification to be sent at a later date time
+    """
+    send_on = add_to_date(get_datetime, days=days, hours=hours)
+
+    frappe.get_doc(dict(
+        doctype="Kallat Notification Schedule",
+        template_key=template_key,
+        status=NotificationScheduleStatus.SCHEDULED.value,
+        context=frappe.as_json(context or dict()),
+        recipients=frappe.as_json(recipients or list()),
+        send_on=send_on,
+    )).insert()
+
+
+def trigger_scheduled_notifications():
+    scheduled_notifications = frappe.get_all(
+        "Notification Schedule",
+        fields=["template_key", "context", "recipients", "send_on"],
+        filters=dict(
+            status=NotificationScheduleStatus.SCHEDULED.value,
+            send_on=["<=", get_datetime()]
+        )
+    )
+
+    for notif in scheduled_notifications:
+        recipients = frappe.parse_json(notif.get("recipients") or "[]")
+        recipients = [
+            NotificationRecipientItem(
+                channel=NotificationChannel(x.get("channel")),
+                channel_id=x.get("channel_id"),
+                user_identifier=x.get("user_identifier"),
+            )
+            for x in recipients
+        ]
+        _send_notification(
+            template_key=notif.get("template_key"),
+            context=frappe.parse_json(notif.get("context") or "{}"),
+            recipients=recipients)
 
 
 class NotificationHandler(Document):
@@ -35,7 +101,21 @@ class NotificationHandler(Document):
             schedule_notification=False,
             days=0,
             hours=0):
-        pass
+
+        if schedule_notification:
+            method = _schedule_notification
+        else:
+            method = _send_notification
+
+        frappe.enqueue(
+            method,
+            enqueue_after_commit=True,
+            template_key=template_key,
+            context=context,
+            recipients=recipients,
+            days=days,
+            hours=hours,
+        )
 
     def get_customer_recipients(self, channels: List[NotificationChannel]):
         """
