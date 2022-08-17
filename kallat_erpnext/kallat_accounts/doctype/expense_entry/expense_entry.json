@@ -79,7 +79,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-07-15 17:31:52.385462",
+ "modified": "2022-08-17 21:14:22.944362",
  "modified_by": "Administrator",
  "module": "Kallat Accounts",
  "name": "Expense Entry",
@@ -127,5 +127,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "track_changes": 1
 }

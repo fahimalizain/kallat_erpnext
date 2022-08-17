@@ -65,7 +65,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-04-05 17:04:00.363073",
+ "modified": "2022-08-17 21:14:54.009893",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Kallat Plot",
@@ -99,5 +99,6 @@
  "search_fields": "title, project",
  "sort_field": "modified",
  "sort_order": "DESC",
- "title_field": "title"
+ "title_field": "title",
+ "track_changes": 1
 }
