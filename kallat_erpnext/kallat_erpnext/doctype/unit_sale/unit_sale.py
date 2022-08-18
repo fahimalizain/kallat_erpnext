@@ -113,7 +113,9 @@ class UnitSale(UnitSaleNotificationHandler):
         self.send_notification(
             self.UNIT_SALE_PAYMENT_RECEIPT,
             context=self.get_context(),
-            recipients=self.get_customer_recipients(channels=self.DEFAULT_CHANNELS)
+            recipients=self.get_customer_recipients(channels=self.DEFAULT_CHANNELS),
+            schedule_notification=True,
+            hours=1,
         )
 
     @frappe.whitelist()
@@ -164,7 +166,9 @@ class UnitSale(UnitSaleNotificationHandler):
         self.send_notification(
             self.UNIT_SALE_WORK_STATUS_UPDATED,
             context=self.get_context(),
-            recipients=self.get_customer_recipients(channels=self.DEFAULT_CHANNELS)
+            recipients=self.get_customer_recipients(channels=self.DEFAULT_CHANNELS),
+            schedule_notification=True,
+            hours=1,
         )
 
     @frappe.whitelist()

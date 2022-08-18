@@ -10,7 +10,9 @@
   "sent_on",
   "template_key",
   "context",
-  "recipients"
+  "recipients",
+  "ref_dt",
+  "ref_dn"
  ],
  "fields": [
   {
@@ -61,11 +63,25 @@
    "fieldtype": "Datetime",
    "label": "Sent On",
    "read_only": 1
+  },
+  {
+   "fieldname": "ref_dt",
+   "fieldtype": "Link",
+   "label": "Ref DocType",
+   "options": "DocType",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ref_dn",
+   "fieldtype": "Dynamic Link",
+   "label": "Ref Document",
+   "options": "ref_dt",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-18 19:37:29.072022",
+ "modified": "2022-08-18 20:53:10.301937",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Kallat Notification Schedule",

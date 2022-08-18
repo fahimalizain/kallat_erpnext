@@ -21,14 +21,22 @@ class UnitSaleNotificationHandler(NotificationHandler):
 
     def get_context(self):
         return dict(
-            doc=self.as_dict(),
+            unit_sale=self.name,
+            customer=self.customer,
+            project=self.project,
+            plot=self.plot,
+            unit_type=self.unit_type,
+            status=self.status,
+            work_status=self.work_status,
         )
 
     def on_submit(self):
         self.send_notification(
             template_key=self.UNIT_SALE_SUBMITTED,
             context=self.get_context(),
-            recipients=self.get_customer_recipients(channels=self.DEFAULT_CHANNELS))
+            recipients=self.get_customer_recipients(channels=self.DEFAULT_CHANNELS),
+            schedule_notification=True,
+            hours=2)
 
     def trigger_due_amount_notification(
             self,

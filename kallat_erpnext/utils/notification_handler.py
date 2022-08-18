@@ -39,11 +39,17 @@ def _send_notification(
     from .sms import send_sms
     from .email import send_email
 
+    sms_recipients = []
+    email_recipients = []
+
     for recipient in recipients:
         if recipient.channel == NotificationChannel.SMS:
-            send_sms()
+            sms_recipients.append(recipient.channel_id)
         elif recipient.channel == NotificationChannel.EMAIL:
-            send_email()
+            email_recipients.append(recipient.channel_id)
+
+    send_sms(template_key=template_key, context=context, recipients=sms_recipients)
+    send_email(template_key=template_key, context=context, recipients=email_recipients)
 
 
 def _schedule_notification(
@@ -66,6 +72,8 @@ def _schedule_notification(
         context=frappe.as_json(context or dict()),
         recipients=frappe.as_json(recipients or list()),
         scheduled_date_time=scheduled_date_time,
+        ref_dt=kwargs.get("ref_dt"),
+        ref_dn=kwargs.get("ref_dn"),
     )).insert()
 
 
@@ -107,8 +115,9 @@ def trigger_scheduled_notifications():
 
 
 class NotificationHandler(Document):
-    @staticmethod
+
     def send_notification(
+            self,
             template_key: str,
             context: dict,
             recipients: List[NotificationRecipientItem],
@@ -129,6 +138,8 @@ class NotificationHandler(Document):
             recipients=recipients,
             days=days,
             hours=hours,
+            ref_dt=self.doctype,
+            ref_dn=self.name,
         )
 
     def get_customer_recipients(self, channels: List[NotificationChannel]):
@@ -140,14 +151,14 @@ class NotificationHandler(Document):
         user_identifier = "Customer:{}".format(customer)
         _info = frappe.db.get_value("Customer", customer, ("mobile_no", "email_id"), as_dict=1)
 
-        if NotificationChannel.SMS in channels:
+        if NotificationChannel.SMS in channels and _info.get("mobile_no"):
             recipients.append(NotificationRecipientItem(
                 channel=NotificationChannel.SMS,
                 channel_id=_info.get("mobile_no"),
                 user_identifier=user_identifier,
             ))
 
-        if NotificationChannel.EMAIL in channels:
+        if NotificationChannel.EMAIL in channels and _info.get("email_id"):
             recipients.append(NotificationRecipientItem(
                 channel=NotificationChannel.SMS,
                 channel_id=_info.get("email_id"),
