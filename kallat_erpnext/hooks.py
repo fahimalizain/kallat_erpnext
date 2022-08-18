@@ -9,6 +9,11 @@ app_color = "grey"
 app_email = "fahimalizain@gmail.com"
 app_license = "MIT"
 
+doc_events = {
+    "*": {
+        "validate": "kallat_erpnext.doc_events.format_phonenumbers.format_number"
+    }
+}
 
 scheduler_events = {
     "daily": [

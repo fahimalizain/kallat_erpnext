@@ -9,6 +9,9 @@ def format_number(number: str):
     """
     Format the Contact numbers in a specific format
     """
+    if not number:
+        return number
+
     parsed_number = parse_number(number)
     if not phonenumbers.is_valid_number(parsed_number):
         raise phonenumbers.NumberParseException(1, "Is not a valid number")

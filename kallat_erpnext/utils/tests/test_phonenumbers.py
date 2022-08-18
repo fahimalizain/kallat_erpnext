@@ -45,3 +45,9 @@ class TestFormatPhoneNumber(TestCase):
 
         with self.assertRaises(phonenumbers.NumberParseException):
             format_number("91 907282252011")
+
+    def test_empty(self):
+        self.assertEqual(
+            "",
+            format_number("")
+        )
