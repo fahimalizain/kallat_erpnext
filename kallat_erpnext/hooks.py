@@ -12,12 +12,18 @@ app_license = "MIT"
 doc_events = {
     "*": {
         "validate": "kallat_erpnext.doc_events.format_phonenumbers.format_number"
+    },
+    "Lead": {
+        "after_insert": "kallat_erpnext.doc_events.lead.send_lead_created_notification"
     }
 }
 
 scheduler_events = {
     "daily": [
         "kallat_erpnext.tasks.daily"
+    ],
+    "all": [
+        "kallat_erpnext.utils.notification_handler.trigger_scheduled_notifications",
     ]
 }
 

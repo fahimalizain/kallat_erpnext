@@ -7,9 +7,12 @@ from frappe.utils import add_to_date, get_datetime
 from frappe.model.document import Document
 
 
-class NotificationChannel(Enum):
+class NotificationChannel(str, Enum):
     EMAIL = "Email"
     SMS = "SMS"
+
+    def __str__(self) -> str:
+        return self.value
 
 
 class NotificationRecipientItem(frappe._dict):
@@ -54,7 +57,7 @@ def _schedule_notification(
     """
     Schedule a Notification to be sent at a later date time
     """
-    send_on = add_to_date(get_datetime, days=days, hours=hours)
+    scheduled_date_time = add_to_date(get_datetime(), days=days, hours=hours)
 
     frappe.get_doc(dict(
         doctype="Kallat Notification Schedule",
@@ -62,17 +65,17 @@ def _schedule_notification(
         status=NotificationScheduleStatus.SCHEDULED.value,
         context=frappe.as_json(context or dict()),
         recipients=frappe.as_json(recipients or list()),
-        send_on=send_on,
+        scheduled_date_time=scheduled_date_time,
     )).insert()
 
 
 def trigger_scheduled_notifications():
     scheduled_notifications = frappe.get_all(
-        "Notification Schedule",
-        fields=["template_key", "context", "recipients", "send_on"],
+        "Kallat Notification Schedule",
+        fields=["template_key", "context", "recipients", "scheduled_date_time", "name"],
         filters=dict(
+            scheduled_date_time=["<=", get_datetime()],
             status=NotificationScheduleStatus.SCHEDULED.value,
-            send_on=["<=", get_datetime()]
         )
     )
 
@@ -86,10 +89,21 @@ def trigger_scheduled_notifications():
             )
             for x in recipients
         ]
+
         _send_notification(
             template_key=notif.get("template_key"),
             context=frappe.parse_json(notif.get("context") or "{}"),
             recipients=recipients)
+
+        frappe.db.set_value(
+            "Kallat Notification Schedule",
+            notif.name,
+            dict(
+                status=NotificationScheduleStatus.SENT.value,
+                sent_on=get_datetime(),
+            ),
+            None,
+        )
 
 
 class NotificationHandler(Document):
