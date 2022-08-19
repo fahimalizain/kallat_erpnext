@@ -89,10 +89,22 @@ class UnitSale(UnitSaleNotificationHandler):
         self.total_balance = flt(self.total_price - self.total_received, precision=2)
 
     @frappe.whitelist()
-    def get_events(self):
-        return frappe.get_all("Unit Sale Event", {
+    def get_events(self, group_payments: int = 1, show_notifications: int = 0):
+        from .form_events_html import group_payments as _group_payments
+
+        UNIT_SALE_EVENT_FIELDS = [
+            "name", "date_time", "type", "new_status",
+            "amount_received", "misc", "amount_due",
+        ]
+
+        events = frappe.get_all("Unit Sale Event", {
             "docstatus": 1, "unit_sale": self.name,
-        }, ["*"], order_by="date_time asc") or []
+        }, UNIT_SALE_EVENT_FIELDS, order_by="date_time desc") or []
+
+        if group_payments:
+            _group_payments(events)
+
+        return events
 
     @frappe.whitelist()
     def make_payment_receipt(self, amount_received, remarks=None, **kwargs):

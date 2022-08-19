@@ -19,8 +19,6 @@
   "amended_from",
   "section_break_09",
   "extra_work",
-  "events_html_sb",
-  "events_html",
   "section_break_13",
   "agreement_price",
   "total_extra_work",
@@ -33,7 +31,9 @@
   "total_received",
   "column_break_26",
   "balance_due",
-  "total_balance"
+  "total_balance",
+  "events_html_sb",
+  "events_html"
  ],
  "fields": [
   {
@@ -211,7 +211,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-08-17 21:13:56.168978",
+ "modified": "2022-08-19 07:19:09.618396",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale",
