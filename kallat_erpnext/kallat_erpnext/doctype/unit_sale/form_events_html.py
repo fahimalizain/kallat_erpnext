@@ -2,7 +2,9 @@ from typing import List
 
 import frappe
 from frappe.utils import flt
+
 from kallat_erpnext.kallat_erpnext import UnitSaleEventType
+from kallat_erpnext.utils.notification_handler import NotificationScheduleStatus
 
 from .unit_sale import UnitSale
 
@@ -42,7 +44,6 @@ def add_notifications(unit_sale: UnitSale, events: List[dict]):
     """
     Inserts Notification Events into the existing list of events
     """
-    from kallat_erpnext.utils.notification_handler import NotificationScheduleStatus
 
     notifications = frappe.get_all(
         "Kallat Notification Schedule",
@@ -63,3 +64,20 @@ def add_notifications(unit_sale: UnitSale, events: List[dict]):
         for x in notifications)
 
     return sorted(events, key=lambda x: x.get("date_time"), reverse=True)
+
+
+def get_scheduled_notifications(unit_sale: UnitSale):
+    return [
+        dict(
+            **x,
+            type="Notification",
+            channels=set([c.get("channel") for c in frappe.parse_json(x.recipients or "[]")]),
+            date_time=x.get("scheduled_date_time"),
+        )
+        for x in frappe.get_all(
+            "Kallat Notification Schedule",
+            fields=["scheduled_date_time", "template_key", "context", "recipients", "name"],
+            filters=dict(
+                status=NotificationScheduleStatus.SCHEDULED.value,
+                ref_dt=unit_sale.doctype,
+                ref_dn=unit_sale.name))]

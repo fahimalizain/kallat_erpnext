@@ -92,7 +92,8 @@ class UnitSale(UnitSaleNotificationHandler):
     def get_events(self, group_payments: int = 1, show_notifications: int = 0):
         from .form_events_html import (
             group_payments as _group_payments,
-            add_notifications as _add_notifications)
+            add_notifications as _add_notifications,
+            get_scheduled_notifications)
 
         UNIT_SALE_EVENT_FIELDS = [
             "name", "date_time", "type", "new_status",
@@ -109,7 +110,10 @@ class UnitSale(UnitSaleNotificationHandler):
         if show_notifications:
             events = _add_notifications(self, events)
 
-        return events
+        return dict(
+            events=events,
+            scheduled_notifications=get_scheduled_notifications(self),
+        )
 
     @frappe.whitelist()
     def make_payment_receipt(self, amount_received, remarks=None, **kwargs):

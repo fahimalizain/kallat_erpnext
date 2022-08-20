@@ -22,17 +22,17 @@ kallat.unit_sale.render_events = function (frm) {
       if (r.exc) {
         return;
       }
-      const events = r.message || [];
-      if (!events.length) {
+      const data = r.message || [];
+      if (!data.events && !data.scheduled_notifications) {
         return;
       }
-      kallat.unit_sale.make_events_html(frm, r.message);
+      kallat.unit_sale.make_events_html(frm, data);
       frm.set_df_property("events_html_sb", "hidden", 0);
     },
   });
 };
 
-kallat.unit_sale.make_events_html = function (frm, events) {
+kallat.unit_sale.make_events_html = function (frm, data) {
   const getEventTypePill = (event) => {
     let pillClass = "red";
     let pillText = event.type;
@@ -130,7 +130,7 @@ kallat.unit_sale.make_events_html = function (frm, events) {
   };
 
   const timelineItems = [];
-  for (const event of events || []) {
+  for (const event of data.events || []) {
     timelineItems.push(`
       <div class="timeline-item mb-2">
         <div class="timeline-dot"></div>
@@ -153,20 +153,63 @@ kallat.unit_sale.make_events_html = function (frm, events) {
       `);
   }
 
-  $(frm.fields_dict["events_html"].wrapper).html(`
-    <div class="new-timeline">
-        <div
-            class="events-heading-group d-flex flex-column flex-md-row"
-            style="position: relative; top: -0.5em; left: -1.5em;"
-        >
-            <h4>Events</h4>
+  const scheduledNotificationItems = [];
+  for (const notif of data.scheduled_notifications || []) {
+    scheduledNotificationItems.push(`
+    <div class="timeline-item mb-2">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content p-3" style="background-color: var(--bg-color)">
+        <div class="d-flex flex-row">
+          <div class="flex-column flex-grow-1 align-items-start justify-content-center">
+            ${getEventTypePill(notif)}
+            ${getEventTypeSubtitle(notif)}
+          </div>
+
+          <div class="flex-column">
+            <span class="px-2 flex-grow-1">${moment(notif.date_time).fromNow()}</span>
+            ${getEventTypeLink(notif)}
+          </div>
         </div>
-        ${timelineItems.join("\n")}
+      </div>
     </div>
     `);
+  }
 
-  kallat.unit_sale.make_events_group_payments_checkbox(frm);
-  kallat.unit_sale.make_events_show_notifications_checkbox(frm);
+  let _html = "";
+  if (scheduledNotificationItems.length) {
+    _html += `
+    <div class="new-timeline">
+        <div
+            class="scheduled-notif-heading-group d-flex flex-column flex-md-row"
+            style="position: relative; top: -0.5em; left: -1.5em;"
+        >
+            <h4>Scheduled Notifications</h4>
+        </div>
+        ${scheduledNotificationItems.join("\n")}
+    </div>
+    `;
+  }
+
+  if (timelineItems.length) {
+    _html += `
+     <div class="new-timeline">
+         <div
+             class="events-heading-group d-flex flex-column flex-md-row"
+             style="position: relative; top: -0.5em; left: -1.5em;"
+         >
+             <h4>Events</h4>
+         </div>
+         ${timelineItems.join("\n")}
+     </div>
+     `;
+  }
+
+  $(frm.fields_dict["events_html"].wrapper).html(_html);
+
+  if (timelineItems.length) {
+    kallat.unit_sale.make_events_group_payments_checkbox(frm);
+    kallat.unit_sale.make_events_show_notifications_checkbox(frm);
+  }
 };
 
 /**
