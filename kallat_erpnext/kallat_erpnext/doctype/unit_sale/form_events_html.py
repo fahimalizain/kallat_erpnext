@@ -1,7 +1,10 @@
 from typing import List
 
+import frappe
 from frappe.utils import flt
 from kallat_erpnext.kallat_erpnext import UnitSaleEventType
+
+from .unit_sale import UnitSale
 
 
 def group_payments(events: List[dict]):
@@ -33,3 +36,30 @@ def group_payments(events: List[dict]):
             curr_event.get("grouped_payments", [curr_event.name])
 
         events.pop(i)
+
+
+def add_notifications(unit_sale: UnitSale, events: List[dict]):
+    """
+    Inserts Notification Events into the existing list of events
+    """
+    from kallat_erpnext.utils.notification_handler import NotificationScheduleStatus
+
+    notifications = frappe.get_all(
+        "Kallat Notification Schedule",
+        fields=["sent_on", "template_key", "context", "recipients", "name"],
+        filters=dict(
+            status=NotificationScheduleStatus.SENT.value,
+            ref_dt=unit_sale.doctype,
+            ref_dn=unit_sale.name))
+
+    events.extend(
+        frappe._dict(
+            type="Notification",
+            template_key=x.template_key,
+            date_time=x.sent_on,
+            channels=set([c.get("channel") for c in frappe.parse_json(x.recipients or "[]")]),
+            name=x.name,
+        )
+        for x in notifications)
+
+    return sorted(events, key=lambda x: x.get("date_time"), reverse=True)

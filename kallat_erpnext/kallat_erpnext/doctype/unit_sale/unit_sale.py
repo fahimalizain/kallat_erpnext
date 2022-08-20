@@ -90,7 +90,9 @@ class UnitSale(UnitSaleNotificationHandler):
 
     @frappe.whitelist()
     def get_events(self, group_payments: int = 1, show_notifications: int = 0):
-        from .form_events_html import group_payments as _group_payments
+        from .form_events_html import (
+            group_payments as _group_payments,
+            add_notifications as _add_notifications)
 
         UNIT_SALE_EVENT_FIELDS = [
             "name", "date_time", "type", "new_status",
@@ -103,6 +105,9 @@ class UnitSale(UnitSaleNotificationHandler):
 
         if group_payments:
             _group_payments(events)
+
+        if show_notifications:
+            events = _add_notifications(self, events)
 
         return events
 
