@@ -31,3 +31,10 @@ class UnitSaleEventType(Enum):
     PAYMENT_RECEIPT = "Payment Receipt"
     LATE_FEE_APPLIED = "Late Fee Applied"
     ADD_EXTRA_WORK = "Add Extra Work"
+
+
+class UnitSaleExtraWorkStatus(Enum):
+    PENDING = "Pending"
+    PAYMENT_RECEIVED = "Payment Received"
+    WORK_IN_PROGRESS = "Work In Progress"
+    COMPLETED = "Completed"

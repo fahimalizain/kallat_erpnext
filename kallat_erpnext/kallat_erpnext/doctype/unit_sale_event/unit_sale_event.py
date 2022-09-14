@@ -49,6 +49,7 @@ class UnitSaleEvent(Document):
     amount_due: float
     percent_due: float
     unit_sale: str
+    is_rera_schedule_due: int
 
     def validate(self):
         self.status = ""  # None status

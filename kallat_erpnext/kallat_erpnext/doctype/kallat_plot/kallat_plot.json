@@ -9,6 +9,7 @@
  "field_order": [
   "title",
   "project",
+  "occupied",
   "column_break_3",
   "status",
   "price",
@@ -60,6 +61,13 @@
    "fieldtype": "Table",
    "label": "Status Updates",
    "options": "Kallat Plot Status Update",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "occupied",
+   "fieldtype": "Check",
+   "label": "Occupied",
    "read_only": 1
   }
  ],

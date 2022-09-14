@@ -16,6 +16,7 @@
   "amount_received",
   "percent_due",
   "amount_due",
+  "is_rera_schedule_due",
   "late_fee_amount",
   "amended_from",
   "misc",
@@ -113,12 +114,18 @@
    "fieldtype": "Percent",
    "label": "% Due",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_rera_schedule_due",
+   "fieldtype": "Check",
+   "label": "Is RERA Schedule Due"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-07-08 20:05:46.213082",
+ "modified": "2022-08-25 20:39:50.231219",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale Event",

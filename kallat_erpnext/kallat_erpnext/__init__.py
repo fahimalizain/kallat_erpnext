@@ -4,6 +4,7 @@ from .enums import (  # noqa: F401
     UnitSaleStatus,
     UnitWorkStatus,
     UnitSaleEventType,
+    UnitSaleExtraWorkStatus,
 )
 
 from .doctype.kallat_project.kallat_project import KallatProject  # noqa: F401

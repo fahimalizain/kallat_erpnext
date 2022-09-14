@@ -18,6 +18,7 @@ def on_extra_work_up(event_doc: "UnitSaleEvent"):
         unit_sale.append("extra_work", dict(
             title=w.get("title"),
             description=w.get("description"),
+            status=w.get("status"),
             qty=w.get("qty"),
             rate=w.get("rate"),
             amount=w.get("amount"),

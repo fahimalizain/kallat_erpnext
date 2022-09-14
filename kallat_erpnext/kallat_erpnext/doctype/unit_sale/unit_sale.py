@@ -10,7 +10,11 @@ import frappe
 from frappe.utils import flt
 
 from .notification import UnitSaleNotificationHandler
-from kallat_erpnext.kallat_erpnext import UnitSaleEventType, UnitSaleStatus, UnitWorkStatus
+from kallat_erpnext.kallat_erpnext import (
+    UnitSaleEventType,
+    UnitSaleStatus,
+    UnitWorkStatus,
+    UnitSaleExtraWorkStatus)
 
 
 class UnitSale(UnitSaleNotificationHandler):
@@ -25,6 +29,7 @@ class UnitSale(UnitSaleNotificationHandler):
     total_extra_work: float
     agreement_price: float
     total_price: float
+    total_due: float
     total_percent_due: float
 
     def validate(self):
@@ -73,18 +78,33 @@ class UnitSale(UnitSaleNotificationHandler):
         events = frappe.get_all(
             "Unit Sale Event", {
                 "unit_sale": self.name, "docstatus": 1}, [
-                "amount_received", "amount_due", "percent_due"])
+                "amount_received", "amount_due", "percent_due", "type", "is_rera_schedule_due"])
 
-        self.total_extra_work = flt(sum(x.amount for x in self.extra_work), precision=2)
+        self.total_fine = flt(sum(
+            flt(x.get("amount_due"), 2) for x in events
+            if x.get("type") == UnitSaleEventType.LATE_FEE_APPLIED.value), precision=2)
+
+        # total_extra_work = SUM(Extra Work for which Payment has been received)
+        self.total_extra_work = flt(sum(x.amount for x in self.extra_work if x.get(
+            "status") != UnitSaleExtraWorkStatus.PENDING.value), precision=2)
+
         self.total_price = flt(
             (self.agreement_price or self.suggested_price) +
             self.total_extra_work + flt(self.total_fine),
             precision=2)
 
         self.total_percent_due = flt(sum(x.percent_due for x in events), precision=2)
-        self.total_due = flt(sum(x.amount_due for x in events), precision=2)
+
+        # Fine Amount is not to be counted in total_due (RERA Schedule Amount)
+        self.total_due = flt(sum(
+            x.amount_due for x in events
+            if x.get("is_rera_schedule_due") == 1), precision=2)
+
+        # self.total_extra_work is the amount received
         self.total_received = flt(sum(x.amount_received for x in events), precision=2)
-        self.balance_due = max(0, flt(self.total_due - self.total_received))
+
+        # Balance Due = Total Due (RERA Due) + Fine Dues
+        self.balance_due = max(0, flt(self.total_due - self.total_received - self.total_extra_work))
 
         self.total_balance = flt(self.total_price - self.total_received, precision=2)
 
@@ -219,6 +239,7 @@ class UnitSale(UnitSaleNotificationHandler):
                     title=x.get("title"),
                     qty=x.get("qty"),
                     rate=x.get("rate"),
+                    status=UnitSaleExtraWorkStatus.PENDING.value,
                     description=x.get("description"))
                 for x in extra_work
             ],

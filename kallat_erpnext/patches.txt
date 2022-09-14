@@ -1,2 +1,3 @@
 kallat_erpnext.patches.v0.doctype_rename_unit_to_plot
 kallat_erpnext.patches.v0.update_unit_sale_total_price
+kallat_erpnext.patches.v0.populate_unit_sale_event_is_rera_schedule_due

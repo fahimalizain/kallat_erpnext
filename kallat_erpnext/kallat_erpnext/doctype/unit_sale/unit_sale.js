@@ -80,15 +80,7 @@ frappe.ui.form.on("Unit Sale", {
       );
     }
 
-    // Extra Work
-    if (frm.doc.status !== kallat.unit_sale.UNIT_SALE_STATUS.COMPLETED) {
-      frm.add_custom_button(
-        "Add Extra Work",
-        () => {
-          kallat.unit_sale.show_extra_work_form(frm);
-        },
-        kallat.unit_sale.UNIT_SALE_FRM_BTN_GRP
-      );
-    }
+    // ExtraWorkItem
+    kallat.unit_sale.add_extra_work_buttons(frm);
   },
 });

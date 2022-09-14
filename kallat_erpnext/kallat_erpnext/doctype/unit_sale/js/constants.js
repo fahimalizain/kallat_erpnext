@@ -24,3 +24,10 @@ kallat.unit_sale.WORK_STATUS = {
 };
 
 kallat.unit_sale.WORK_STATUSES = Object.values(kallat.unit_sale.WORK_STATUS);
+
+kallat.unit_sale.EXTRA_WORK_STATUS = {
+    PENDING: "Pending",
+    PAYMENT_RECEIVED: "Payment Received",
+    WORK_IN_PROGRESS: "Work In Progress",
+    COMPLETED: "Completed",
+}
