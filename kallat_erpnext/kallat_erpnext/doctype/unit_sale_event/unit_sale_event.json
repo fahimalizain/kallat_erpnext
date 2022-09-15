@@ -38,7 +38,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Type",
-   "options": "Unit Sale Update\nWork Status Update\nPayment Receipt\nLate Fee Applied\nAdd Extra Work",
+   "options": "Unit Sale Update\nWork Status Update\nPayment Receipt\nLate Fee Applied\nAdd Extra Work\nExtra Work Update",
    "reqd": 1
   },
   {
@@ -125,7 +125,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-08-25 20:39:50.231219",
+ "modified": "2022-09-15 19:44:23.651575",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Unit Sale Event",

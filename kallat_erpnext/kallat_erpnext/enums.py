@@ -31,6 +31,7 @@ class UnitSaleEventType(Enum):
     PAYMENT_RECEIPT = "Payment Receipt"
     LATE_FEE_APPLIED = "Late Fee Applied"
     ADD_EXTRA_WORK = "Add Extra Work"
+    EXTRA_WORK_UPDATE = "Extra Work Update"
 
 
 class UnitSaleExtraWorkStatus(Enum):

@@ -33,3 +33,11 @@ def on_extra_work_down(event_doc: "UnitSaleEvent"):
     unit_sale.extra_work = [
         x for x in unit_sale.extra_work if x.ref not in _refs
     ]
+
+
+def on_extra_work_update_up(event_doc: "UnitSaleEvent"):
+    pass
+
+
+def on_extra_work_update_down(event_doc: "UnitSaleEvent"):
+    pass

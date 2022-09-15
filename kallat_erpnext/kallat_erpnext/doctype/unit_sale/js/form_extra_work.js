@@ -8,13 +8,13 @@ frappe.provide("kallat.unit_sale")
  * - Complete Extra Work
  * @param {FrappeForm} frm 
  */
-kallat.unit_sale.add_extra_work_buttons = function (frm) {
+kallat.unit_sale.extra_work_setup = function (frm) {
     // Add Extra Work
     if (frm.doc.status !== kallat.unit_sale.UNIT_SALE_STATUS.COMPLETED) {
         frm.add_custom_button(
             "Add Extra Work",
             () => {
-                kallat.unit_sale.show_extra_work_form(frm);
+                kallat.unit_sale.extra_work_show_add_new_form(frm);
             },
             kallat.unit_sale.UNIT_SALE_FRM_BTN_GRP
         );
@@ -56,38 +56,10 @@ kallat.unit_sale.add_extra_work_buttons = function (frm) {
 }
 
 /**
- * Show a Form to make ExtraWork Payment
- * @param {FrappeForm} frm 
- * @param {String} extra_work_row name of ExtraWorkItem Row
- */
-kallat.unit_sale.extra_work_make_payment_form = function (frm, extra_work_row) {
-    console.log("Make Payment", extra_work_row)
-}
-
-/**
- * Get Confirmation from User to StartWork on ExtraWorkItem
- * @param {FrappeForm} frm 
- * @param {String} extra_work_row name of ExtraWorkItem Row
- */
-kallat.unit_sale.extra_work_start_work_form = function(frm, extra_work_row) {
-    console.log("Start Work", extra_work_row);
-}
-
-/**
- * Get Confirmation from User to Complete work on ExtraWorkItem
- * @param {FrappeForm} frm 
- * @param {String} extra_work_row name of ExtraWorkItem Row
- */
- kallat.unit_sale.extra_work_complete_work_form = function(frm, extra_work_row) {
-    console.log("Complete Work", extra_work_row);
-}
-
-
-/**
  * Show a Form to Add a new ExtraWorkItem
  * @param {FrappeForm} frm 
  */
-kallat.unit_sale.show_extra_work_form = function (frm) {
+kallat.unit_sale.extra_work_show_add_new_form = function (frm) {
     // Clone fields
     const extra_work_fields = JSON.parse(
         JSON.stringify(frappe.get_meta("Extra Work Item").fields)
@@ -172,6 +144,140 @@ kallat.unit_sale.show_extra_work_form = function (frm) {
     }
 
     d.show();
+}
+
+/**
+ * Show a Form to make ExtraWork Payment
+ * @param {FrappeForm} frm 
+ * @param {String} extra_work_row name of ExtraWorkItem Row
+ */
+kallat.unit_sale.extra_work_make_payment_form = function (frm, extra_work_row) {
+
+    extra_work_row = frm.doc.extra_work.find(x => x.name == extra_work_row);
+
+    const fields = [
+        {
+            label: "Extra Work Amount",
+            fieldtype: "Currency",
+            fieldname: "extra_work_amount",
+            read_only: 1,
+            default: extra_work_row.amount,
+        },
+        {
+            label: "Total Received",
+            fieldtype: "Currency",
+            fieldname: "total_received",
+            read_only: 1,
+            default: "0",
+        },
+        {
+            label: "Amount",
+            fieldtype: "Currency",
+            fieldname: "amount",
+        },
+        {
+            label: "Remarks",
+            fieldtype: "Small Text",
+            fieldname: "remarks",
+        },
+    ];
+    const d = new frappe.ui.Dialog({
+        title: "Make Extra Work Payment",
+        fields,
+        primary_action_label: "Make Payment",
+        primary_action(values) {
+            frm.call({
+                method: "update_extra_work",
+                doc: frm.doc,
+                freeze: true,
+                args: {
+                    remarks: values.remarks,
+                    amount: values.amount,
+                    event_datetime: values.event_datetime,
+                    extra_work_row: extra_work_row.name,
+                    update_type: "PAYMENT_RECEIPT"
+                },
+                callback(r) {
+                    if (r.exc) {
+                        frappe.msgprint(
+                            "Something went wrong! Please try again or Contact Developer"
+                        );
+                    } else {
+                        frappe.msgprint("Extra Work Payment Received!");
+                        frm.reload_doc();
+                        d.hide();
+                    }
+                },
+            });
+        }
+    });
+
+    d.show();
+}
+
+/**
+ * Get Confirmation from User to StartWork on ExtraWorkItem
+ * @param {FrappeForm} frm 
+ * @param {String} extra_work_row name of ExtraWorkItem Row
+ */
+kallat.unit_sale.extra_work_start_work_form = function (frm, extra_work_row) {
+    extra_work_row = frm.doc.extra_work.find(x => x.name == extra_work_row);
+    frappe.confirm(`Are you sure to Start the work on ${extra_work_row.title}?`, () => {
+        console.log("Start!")
+        frm.call({
+            method: "update_extra_work",
+            doc: frm.doc,
+            freeze: true,
+            args: {
+                event_datetime: values.event_datetime,
+                extra_work_row: extra_work_row.name,
+                update_type: "START_WORK"
+            },
+            callback(r) {
+                if (r.exc) {
+                    frappe.msgprint(
+                        "Something went wrong! Please try again or Contact Developer"
+                    );
+                } else {
+                    frappe.msgprint("Extra Work Started!");
+                    frm.reload_doc();
+                    d.hide();
+                }
+            },
+        });
+    })
+}
+
+/**
+ * Get Confirmation from User to Complete work on ExtraWorkItem
+ * @param {FrappeForm} frm 
+ * @param {String} extra_work_row name of ExtraWorkItem Row
+ */
+kallat.unit_sale.extra_work_complete_work_form = function (frm, extra_work_row) {
+    extra_work_row = frm.doc.extra_work.find(x => x.name == extra_work_row);
+    frappe.confirm(`Are you sure to Complete the work on ${extra_work_row.title}?`, () => {
+        frm.call({
+            method: "update_extra_work",
+            doc: frm.doc,
+            freeze: true,
+            args: {
+                event_datetime: values.event_datetime,
+                extra_work_row: extra_work_row.name,
+                update_type: "COMPLETE_WORK"
+            },
+            callback(r) {
+                if (r.exc) {
+                    frappe.msgprint(
+                        "Something went wrong! Please try again or Contact Developer"
+                    );
+                } else {
+                    frappe.msgprint("Extra Work Completed!");
+                    frm.reload_doc();
+                    d.hide();
+                }
+            },
+        });
+    })
 }
 
 /**

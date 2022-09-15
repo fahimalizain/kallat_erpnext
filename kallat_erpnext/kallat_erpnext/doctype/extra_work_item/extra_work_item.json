@@ -14,7 +14,8 @@
   "amount",
   "section_break_5",
   "description",
-  "ref"
+  "ref",
+  "total_received"
  ],
  "fields": [
   {
@@ -72,12 +73,18 @@
    "label": "Status",
    "options": "Pending\nPayment Received\nWork In Progress\nCompleted",
    "reqd": 1
+  },
+  {
+   "fieldname": "total_received",
+   "fieldtype": "Currency",
+   "label": "Total Received",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-09-14 19:41:10.565333",
+ "modified": "2022-09-15 20:58:14.734570",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
  "name": "Extra Work Item",

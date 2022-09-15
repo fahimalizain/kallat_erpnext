@@ -21,7 +21,9 @@ from .handlers import (
     on_work_status_update_up,
     on_work_status_update_down,
     on_extra_work_up,
-    on_extra_work_down)
+    on_extra_work_down,
+    on_extra_work_update_up,
+    on_extra_work_update_down)
 
 if TYPE_CHECKING:
     from kallat_erpnext.kallat_erpnext.doctype.unit_sale.unit_sale import UnitSale
@@ -39,7 +41,10 @@ EVENT_HANDLERS = frappe._dict({
     ),
     UnitSaleEventType.ADD_EXTRA_WORK: dict(
         up=on_extra_work_up, down=on_extra_work_down,
-    )
+    ),
+    UnitSaleEventType.EXTRA_WORK_UPDATE: dict(
+        up=on_extra_work_update_up, down=on_extra_work_update_down,
+    ),
 })
 
 

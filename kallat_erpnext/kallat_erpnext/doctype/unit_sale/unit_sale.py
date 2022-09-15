@@ -250,6 +250,20 @@ class UnitSale(UnitSaleNotificationHandler):
         )).insert(ignore_permissions=True)
         self.reload()
 
+    @frappe.whitelist()
+    def update_extra_work(self, args):
+        print("UPDATE EXTRA WORK", args)
+        frappe.get_doc(dict(
+            doctype="Unit Sale Event",
+            type=UnitSaleEventType.EXTRA_WORK_UPDATE.value,
+            unit_sale=self.name,
+            remarks=args.get("remarks"),
+            docstatus=1,
+            misc=frappe.as_json(args),
+            creation=args.get("event_datetime", None),
+        )).insert(ignore_permissions=True)
+        self.reload()
+
     def link_event_files(self, event_doc, files):
         if not files or "num_files" not in files:
             return

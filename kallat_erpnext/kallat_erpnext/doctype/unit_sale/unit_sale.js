@@ -81,6 +81,6 @@ frappe.ui.form.on("Unit Sale", {
     }
 
     // ExtraWorkItem
-    kallat.unit_sale.add_extra_work_buttons(frm);
+    kallat.unit_sale.extra_work_setup(frm);
   },
 });
