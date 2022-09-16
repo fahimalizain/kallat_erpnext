@@ -6,4 +6,11 @@ from frappe.model.document import Document
 
 
 class ExtraWorkItem(Document):
-    pass
+    title: str
+    status: str
+    qty: float
+    rate: float
+    amount: float
+    total_received: float
+    description: str
+    ref: str

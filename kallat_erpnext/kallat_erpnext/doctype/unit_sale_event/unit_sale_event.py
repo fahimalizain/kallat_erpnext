@@ -20,8 +20,8 @@ from .handlers import (
     on_handing_over,
     on_work_status_update_up,
     on_work_status_update_down,
-    on_extra_work_up,
-    on_extra_work_down,
+    on_extra_work_add_up,
+    on_extra_work_add_down,
     on_extra_work_update_up,
     on_extra_work_update_down)
 
@@ -40,7 +40,7 @@ EVENT_HANDLERS = frappe._dict({
         up=on_payment_receipt_up, down=on_payment_receipt_down,
     ),
     UnitSaleEventType.ADD_EXTRA_WORK: dict(
-        up=on_extra_work_up, down=on_extra_work_down,
+        up=on_extra_work_add_up, down=on_extra_work_add_down,
     ),
     UnitSaleEventType.EXTRA_WORK_UPDATE: dict(
         up=on_extra_work_update_up, down=on_extra_work_update_down,
@@ -115,7 +115,8 @@ class UnitSaleEvent(Document):
                 handler = EVENT_HANDLERS[event_type].get(sub_type)
             elif event_type in (UnitSaleEventType.WORK_STATUS_UPDATE,
                                 UnitSaleEventType.PAYMENT_RECEIPT,
-                                UnitSaleEventType.ADD_EXTRA_WORK):
+                                UnitSaleEventType.ADD_EXTRA_WORK,
+                                UnitSaleEventType.EXTRA_WORK_UPDATE,):
                 handler = EVENT_HANDLERS[event_type]
 
             if isinstance(handler, dict):

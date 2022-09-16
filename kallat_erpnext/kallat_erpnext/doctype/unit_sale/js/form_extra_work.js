@@ -168,7 +168,7 @@ kallat.unit_sale.extra_work_make_payment_form = function (frm, extra_work_row) {
             fieldtype: "Currency",
             fieldname: "total_received",
             read_only: 1,
-            default: "0",
+            default: extra_work_row.total_received || "0",
         },
         {
             label: "Amount",
@@ -229,7 +229,7 @@ kallat.unit_sale.extra_work_start_work_form = function (frm, extra_work_row) {
             doc: frm.doc,
             freeze: true,
             args: {
-                event_datetime: values.event_datetime,
+                // event_datetime: values.event_datetime,
                 extra_work_row: extra_work_row.name,
                 update_type: "START_WORK"
             },
@@ -261,7 +261,7 @@ kallat.unit_sale.extra_work_complete_work_form = function (frm, extra_work_row) 
             doc: frm.doc,
             freeze: true,
             args: {
-                event_datetime: values.event_datetime,
+                // event_datetime: values.event_datetime,
                 extra_work_row: extra_work_row.name,
                 update_type: "COMPLETE_WORK"
             },
@@ -350,7 +350,7 @@ kallat.unit_sale.extra_work_make_btn = function (args) {
     frm.add_custom_button(
         args.label,
         () => {
-            const d = kallat.unit_sale.extra_work_select_form(frm,);
+            const d = kallat.unit_sale.extra_work_select_form(frm, args.filter_statuses);
 
             // On Hide after Selection, Open the form
             d.on_hide = () => {

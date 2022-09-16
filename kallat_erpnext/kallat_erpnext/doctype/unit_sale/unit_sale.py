@@ -252,7 +252,6 @@ class UnitSale(UnitSaleNotificationHandler):
 
     @frappe.whitelist()
     def update_extra_work(self, args):
-        print("UPDATE EXTRA WORK", args)
         frappe.get_doc(dict(
             doctype="Unit Sale Event",
             type=UnitSaleEventType.EXTRA_WORK_UPDATE.value,
