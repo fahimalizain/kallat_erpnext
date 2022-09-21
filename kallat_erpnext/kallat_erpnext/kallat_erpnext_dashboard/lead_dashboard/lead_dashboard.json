@@ -23,15 +23,15 @@
   }
  ],
  "creation": "2022-09-20 15:23:49.376459",
- "dashboard_name": "Leads Dashboard",
+ "dashboard_name": "Lead Dashboard",
  "docstatus": 0,
  "doctype": "Dashboard",
  "idx": 0,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2022-09-21 10:47:51.404179",
+ "modified": "2022-09-21 10:55:51.404179",
  "modified_by": "Administrator",
  "module": "Kallat Erpnext",
- "name": "Leads Dashboard",
+ "name": "Lead Dashboard",
  "owner": "Administrator"
 }
