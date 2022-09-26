@@ -13,6 +13,9 @@ doc_events = {
     "*": {
         "validate": "kallat_erpnext.doc_events.format_phonenumbers.format_number"
     },
+    "Task": {
+        "validate": "kallat_erpnext.doc_events.tasks.validate"
+    },
     "Lead": {
         "after_insert": "kallat_erpnext.doc_events.lead.send_lead_created_notification"
     }
